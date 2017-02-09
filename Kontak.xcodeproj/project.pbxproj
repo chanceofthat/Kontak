@@ -1,0 +1,427 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		15D9B7C71E4CF838009EBBAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */; };
+		15D9B7C91E4CF838009EBBAF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9B7C81E4CF838009EBBAF /* ViewController.swift */; };
+		15D9B7CC1E4CF838009EBBAF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15D9B7CA1E4CF838009EBBAF /* Main.storyboard */; };
+		15D9B7CE1E4CF838009EBBAF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15D9B7CD1E4CF838009EBBAF /* Assets.xcassets */; };
+		15D9B7D11E4CF838009EBBAF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15D9B7CF1E4CF838009EBBAF /* LaunchScreen.storyboard */; };
+		15D9B7DC1E4CF838009EBBAF /* KontakTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9B7DB1E4CF838009EBBAF /* KontakTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		15D9B7D81E4CF838009EBBAF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15D9B7BB1E4CF838009EBBAF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15D9B7C21E4CF838009EBBAF;
+			remoteInfo = Kontak;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		15D9B7C31E4CF838009EBBAF /* Kontak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kontak.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		15D9B7C81E4CF838009EBBAF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		15D9B7CB1E4CF838009EBBAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		15D9B7CD1E4CF838009EBBAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		15D9B7D01E4CF838009EBBAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		15D9B7D21E4CF838009EBBAF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		15D9B7D71E4CF838009EBBAF /* KontakTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KontakTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		15D9B7DB1E4CF838009EBBAF /* KontakTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KontakTests.swift; sourceTree = "<group>"; };
+		15D9B7DD1E4CF838009EBBAF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		15D9B7C01E4CF838009EBBAF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15D9B7D41E4CF838009EBBAF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		15D9B7BA1E4CF838009EBBAF = {
+			isa = PBXGroup;
+			children = (
+				15D9B7C51E4CF838009EBBAF /* Kontak */,
+				15D9B7DA1E4CF838009EBBAF /* KontakTests */,
+				15D9B7C41E4CF838009EBBAF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		15D9B7C41E4CF838009EBBAF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15D9B7C31E4CF838009EBBAF /* Kontak.app */,
+				15D9B7D71E4CF838009EBBAF /* KontakTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		15D9B7C51E4CF838009EBBAF /* Kontak */ = {
+			isa = PBXGroup;
+			children = (
+				15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */,
+				15D9B7C81E4CF838009EBBAF /* ViewController.swift */,
+				15D9B7CA1E4CF838009EBBAF /* Main.storyboard */,
+				15D9B7CD1E4CF838009EBBAF /* Assets.xcassets */,
+				15D9B7CF1E4CF838009EBBAF /* LaunchScreen.storyboard */,
+				15D9B7D21E4CF838009EBBAF /* Info.plist */,
+			);
+			path = Kontak;
+			sourceTree = "<group>";
+		};
+		15D9B7DA1E4CF838009EBBAF /* KontakTests */ = {
+			isa = PBXGroup;
+			children = (
+				15D9B7DB1E4CF838009EBBAF /* KontakTests.swift */,
+				15D9B7DD1E4CF838009EBBAF /* Info.plist */,
+			);
+			path = KontakTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		15D9B7C21E4CF838009EBBAF /* Kontak */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15D9B7E01E4CF838009EBBAF /* Build configuration list for PBXNativeTarget "Kontak" */;
+			buildPhases = (
+				15D9B7BF1E4CF838009EBBAF /* Sources */,
+				15D9B7C01E4CF838009EBBAF /* Frameworks */,
+				15D9B7C11E4CF838009EBBAF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Kontak;
+			productName = Kontak;
+			productReference = 15D9B7C31E4CF838009EBBAF /* Kontak.app */;
+			productType = "com.apple.product-type.application";
+		};
+		15D9B7D61E4CF838009EBBAF /* KontakTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15D9B7E31E4CF838009EBBAF /* Build configuration list for PBXNativeTarget "KontakTests" */;
+			buildPhases = (
+				15D9B7D31E4CF838009EBBAF /* Sources */,
+				15D9B7D41E4CF838009EBBAF /* Frameworks */,
+				15D9B7D51E4CF838009EBBAF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				15D9B7D91E4CF838009EBBAF /* PBXTargetDependency */,
+			);
+			name = KontakTests;
+			productName = KontakTests;
+			productReference = 15D9B7D71E4CF838009EBBAF /* KontakTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		15D9B7BB1E4CF838009EBBAF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = ChanceDaniel;
+				TargetAttributes = {
+					15D9B7C21E4CF838009EBBAF = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 3HTQ3XN55R;
+						ProvisioningStyle = Automatic;
+					};
+					15D9B7D61E4CF838009EBBAF = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 3HTQ3XN55R;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 15D9B7C21E4CF838009EBBAF;
+					};
+				};
+			};
+			buildConfigurationList = 15D9B7BE1E4CF838009EBBAF /* Build configuration list for PBXProject "Kontak" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 15D9B7BA1E4CF838009EBBAF;
+			productRefGroup = 15D9B7C41E4CF838009EBBAF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				15D9B7C21E4CF838009EBBAF /* Kontak */,
+				15D9B7D61E4CF838009EBBAF /* KontakTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		15D9B7C11E4CF838009EBBAF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15D9B7D11E4CF838009EBBAF /* LaunchScreen.storyboard in Resources */,
+				15D9B7CE1E4CF838009EBBAF /* Assets.xcassets in Resources */,
+				15D9B7CC1E4CF838009EBBAF /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15D9B7D51E4CF838009EBBAF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		15D9B7BF1E4CF838009EBBAF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15D9B7C91E4CF838009EBBAF /* ViewController.swift in Sources */,
+				15D9B7C71E4CF838009EBBAF /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15D9B7D31E4CF838009EBBAF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15D9B7DC1E4CF838009EBBAF /* KontakTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		15D9B7D91E4CF838009EBBAF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15D9B7C21E4CF838009EBBAF /* Kontak */;
+			targetProxy = 15D9B7D81E4CF838009EBBAF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		15D9B7CA1E4CF838009EBBAF /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				15D9B7CB1E4CF838009EBBAF /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		15D9B7CF1E4CF838009EBBAF /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				15D9B7D01E4CF838009EBBAF /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		15D9B7DE1E4CF838009EBBAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		15D9B7DF1E4CF838009EBBAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		15D9B7E11E4CF838009EBBAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 3HTQ3XN55R;
+				INFOPLIST_FILE = Kontak/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pro.chancedaniel.Kontak;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		15D9B7E21E4CF838009EBBAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 3HTQ3XN55R;
+				INFOPLIST_FILE = Kontak/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pro.chancedaniel.Kontak;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		15D9B7E41E4CF838009EBBAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 3HTQ3XN55R;
+				INFOPLIST_FILE = KontakTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pro.chancedaniel.KontakTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kontak.app/Kontak";
+			};
+			name = Debug;
+		};
+		15D9B7E51E4CF838009EBBAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 3HTQ3XN55R;
+				INFOPLIST_FILE = KontakTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pro.chancedaniel.KontakTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kontak.app/Kontak";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		15D9B7BE1E4CF838009EBBAF /* Build configuration list for PBXProject "Kontak" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15D9B7DE1E4CF838009EBBAF /* Debug */,
+				15D9B7DF1E4CF838009EBBAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		15D9B7E01E4CF838009EBBAF /* Build configuration list for PBXNativeTarget "Kontak" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15D9B7E11E4CF838009EBBAF /* Debug */,
+				15D9B7E21E4CF838009EBBAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		15D9B7E31E4CF838009EBBAF /* Build configuration list for PBXNativeTarget "KontakTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15D9B7E41E4CF838009EBBAF /* Debug */,
+				15D9B7E51E4CF838009EBBAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 15D9B7BB1E4CF838009EBBAF /* Project object */;
+}
