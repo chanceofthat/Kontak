@@ -1,0 +1,220 @@
+//
+//  KONLocationManager.swift
+//  Kontak
+//
+//  Created by Chance Daniel on 2/11/17.
+//  Copyright © 2017 ChanceDaniel. All rights reserved.
+//
+
+import UIKit
+import CoreLocation
+
+protocol KONLocationManagerDelegate: class {
+    func didUpdateCurrentLocation(location: CLLocation)
+}
+
+private extension Double {
+    var radians: Double {
+        get {
+            return (self * .pi / 180)
+        }
+    }
+}
+
+extension KONLocationManager {
+    struct KONLocationRange {
+        var latMin: Double
+        var latMax: Double
+        var lonMin: Double
+        var lonMax: Double
+        
+    }
+    static func locationRangeFromLocation(location: KONUser.KONLocation, radius: Double) -> KONLocationRange {
+
+        return KONLocationRange.init(latMin: location.latitude - (radius / 111.12),
+                              latMax: location.latitude + (radius / 111.12),
+                              lonMin: location.longitude - radius / fabs(cos(location.latitude.radians) * 111.12),
+                              lonMax: location.longitude + radius / fabs(cos(location.latitude.radians) * 111.12))
+    }
+}
+
+class KONLocationManager: NSObject, CLLocationManagerDelegate {
+    
+    enum LocationManagerStatus {
+        case notStarted, started, paused
+    }
+
+    // MARK: - Properties
+    weak var delegate: KONLocationManagerDelegate?
+    private var locationManager: CLLocationManager?
+    private var lowPowerMode = false
+    private var didRecentlyUpdateLocation = false
+    var status: LocationManagerStatus = .notStarted
+    
+    override init() {
+        super.init()
+        
+        startLocationManager()
+    }
+    
+    // MARK: Starting and Stopping Location Services
+    func startLocationManager() {
+        
+        if locationManager == nil {
+            locationManager = CLLocationManager()
+        }
+        
+        // Configure Location Manager
+        if CLLocationManager.locationServicesEnabled() {
+            
+            locationManager!.delegate = self
+            locationManager?.pausesLocationUpdatesAutomatically = true
+            locationManager?.activityType = CLActivityType.other
+
+            if (CLLocationManager.authorizationStatus() == .notDetermined) {
+                locationManager!.requestAlwaysAuthorization()
+            }
+            
+            let currentAuthStatus = CLLocationManager.authorizationStatus()
+            
+            if currentAuthStatus == .authorizedAlways {
+                print("Location Services Authorized Always")
+                
+                // If Significant Change Mode
+                if lowPowerMode {
+                    startInSigChangeMode()
+                }
+                else {
+                    startInRegMonitorMode()
+                }
+
+            }
+            else if currentAuthStatus == .authorizedWhenInUse {
+                print("Location Serviecs Authorized When In Use")
+                startInStandardMode()
+            }
+            else {
+                print("Location Services Not Authorized")
+                return
+            }
+            
+        }
+        else {
+            // TODO: - Handle LocServices not enabled.
+            print("Location Services Not Enabled")
+        }
+    }
+    
+    func stopLocationManager() {
+        status = .notStarted
+        locationManager?.stopMonitoringSignificantLocationChanges()
+        locationManager?.stopUpdatingLocation()
+        locationManager = nil
+    }
+    
+    // MARK:- Sigificant Change Location Serivces
+    func startInSigChangeMode() {
+        print("Starting In Significant Change Mode")
+        locationManager!.startMonitoringSignificantLocationChanges()
+        if CLLocationManager.deferredLocationUpdatesAvailable() {
+            locationManager?.allowDeferredLocationUpdates(untilTraveled: KONRegionRadius, timeout: TimeInterval(60))
+        }
+        status = .started
+    }
+    
+    // MARK:- Region Monitoring Location Services
+    func startInRegMonitorMode() {
+        
+        guard CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) else {
+            startInSigChangeMode()
+            return
+        }
+        
+        print("Starting In Region Monitoring Mode")
+        
+        updateRegion()
+
+        status = .started
+    }
+    
+    func updateRegion() {
+        if let locationManager = locationManager {
+            if let currentLocation = locationManager.location {
+                let center = CLLocationCoordinate2D(latitude: currentLocation.coordinate.latitude, longitude: currentLocation.coordinate.longitude)
+                let region = CLCircularRegion(center: center, radius: KONRegionRadius, identifier: KONRegionIdentifier)
+                locationManager.startMonitoring(for: region)
+            }
+            didRecentlyUpdateLocation = false
+            locationManager.startUpdatingLocation()
+            locationManager.requestLocation()
+        }
+    }
+    
+    // MARK:- Standard Location Services
+    func startInStandardMode() {
+        print("Starting In Standard Mode")
+        status = .started
+
+    }
+    
+    // MARK:- CLLocationManagerDelegate
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if !didRecentlyUpdateLocation {
+            if let latestLocation = locations.last {
+                let locationTimestamp = latestLocation.timestamp
+                
+//                if (abs(Int32(locationTimestamp.timeIntervalSinceNow)) < 15) {
+                    print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
+                    didRecentlyUpdateLocation = true
+                    manager.stopUpdatingLocation()
+                    self.delegate?.didUpdateCurrentLocation(location: latestLocation)
+//                }
+            }
+        }
+    }
+    
+    func locationManagerDidPauseLocationUpdates(_ manager: CLLocationManager) {
+        // TODO: - Handle pausing
+        print("Did Pause Location Updates")
+        status = .paused
+    }
+    
+    func locationManagerDidResumeLocationUpdates(_ manager: CLLocationManager) {
+        // TODO: - Handle resuming
+        print("Did Resume Location Updates")
+        status = .started
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status != .denied && status != .restricted {
+            if self.status == .notStarted {
+                startLocationManager()
+            }
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        print("Did Start Monitoring Region: \(region)")
+    }
+    
+//    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+//        print("Did Enter Region")
+//        
+//    }
+    
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("Did Exit Region")
+        if let locationManager = locationManager {
+            locationManager.stopMonitoring(for: region)
+            updateRegion()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location Manager Did Fail, Error: \(error)")
+    }
+    
+    func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+        print("Region Monitoring Did Fail")
+    }
+}

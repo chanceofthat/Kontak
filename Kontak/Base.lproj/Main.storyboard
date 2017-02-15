@@ -1,26 +1,221 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12106.1" systemVersion="16E154a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="665-P4-KJA">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12074.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--NEARBY-->
+        <scene sceneID="lez-sp-06w">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Llw-su-v2e" customClass="KONNearbyViewController" customModule="Kontak" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                        <viewControllerLayoutGuide type="top" id="lWe-rz-uYH"/>
+                        <viewControllerLayoutGuide type="bottom" id="TAp-Kp-gGp"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <view key="view" contentMode="scaleToFill" id="egC-ph-g3t" customClass="KONBackgroundView" customModule="Kontak" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BlM-g8-8IJ" customClass="KONNavigationBar" customModule="Kontak" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="TxJ-bB-4VB"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="KONTAK" id="bXR-cE-cAb"/>
+                                </items>
+                            </navigationBar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pSU-2o-wTl" customClass="KONBackgroundCardView" customModule="Kontak" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="171" width="375" height="496"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="lSJ-qa-9Ko">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="496"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="KONNearbyTableCellReuseIdentifier" id="vTV-bO-E6x" customClass="KONNearbyTableViewCell" customModule="Kontak" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vTV-bO-E6x" id="C8J-dD-e3q">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EmV-Oh-Jfz">
+                                                            <rect key="frame" x="166" y="11" width="91" height="21"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </tableViewCellContentView>
+                                                <connections>
+                                                    <outlet property="nameLabel" destination="EmV-Oh-Jfz" id="ayL-gX-0Qa"/>
+                                                </connections>
+                                            </tableViewCell>
+                                        </prototypes>
+                                    </tableView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="496" id="XrM-Pa-ueU"/>
+                                    <constraint firstAttribute="bottom" secondItem="lSJ-qa-9Ko" secondAttribute="bottom" id="aO4-AE-DL2"/>
+                                    <constraint firstAttribute="trailing" secondItem="lSJ-qa-9Ko" secondAttribute="trailing" id="lZM-Li-eVl"/>
+                                    <constraint firstItem="lSJ-qa-9Ko" firstAttribute="top" secondItem="pSU-2o-wTl" secondAttribute="top" id="ndy-4F-pQf"/>
+                                    <constraint firstItem="lSJ-qa-9Ko" firstAttribute="leading" secondItem="pSU-2o-wTl" secondAttribute="leading" id="vQ4-OP-Tku"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.14901960784313725" green="0.61568627450980395" blue="0.92549019607843142" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="pSU-2o-wTl" secondAttribute="trailing" id="472-wO-4JF"/>
+                            <constraint firstItem="pSU-2o-wTl" firstAttribute="leading" secondItem="egC-ph-g3t" secondAttribute="leading" id="EYI-A9-V8I"/>
+                            <constraint firstAttribute="trailing" secondItem="BlM-g8-8IJ" secondAttribute="trailing" id="Feh-on-ZIj"/>
+                            <constraint firstItem="pSU-2o-wTl" firstAttribute="top" secondItem="BlM-g8-8IJ" secondAttribute="bottom" constant="91" id="Pv8-tq-AXB"/>
+                            <constraint firstItem="BlM-g8-8IJ" firstAttribute="leading" secondItem="egC-ph-g3t" secondAttribute="leading" id="XVM-sO-PKk"/>
+                            <constraint firstItem="BlM-g8-8IJ" firstAttribute="top" secondItem="egC-ph-g3t" secondAttribute="top" id="lKR-vc-3fl"/>
+                        </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="NEARBY" image="NearbyButtonIconUnselected" selectedImage="NearbyButtonIconSelected" id="lr0-Zf-d2t"/>
+                    <connections>
+                        <outlet property="backgroundCardView" destination="pSU-2o-wTl" id="Bg4-BB-tuv"/>
+                        <outlet property="backgroundView" destination="egC-ph-g3t" id="Kc0-jg-qN3"/>
+                        <outlet property="tableView" destination="lSJ-qa-9Ko" id="elt-EU-por"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YM1-Bx-1EJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-554" y="912"/>
+        </scene>
+        <!--MET-->
+        <scene sceneID="FZu-IM-fYm">
+            <objects>
+                <viewController id="OmL-E1-LSM" customClass="KONMetViewController" customModule="Kontak" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="oOa-H3-7da"/>
+                        <viewControllerLayoutGuide type="bottom" id="hq7-iv-vl7"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="X85-KK-tdJ" customClass="KONBackgroundView" customModule="Kontak" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Cl-FF-IoP" customClass="KONNavigationBar" customModule="Kontak" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="PUR-PU-LBJ"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="KONTAK" id="QVR-5s-XJh"/>
+                                </items>
+                            </navigationBar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6dT-E5-73f" customClass="KONBackgroundCardView" customModule="Kontak" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="171" width="375" height="496"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="496" id="GOF-eu-DhX"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.91764705882352937" green="0.32941176470588235" blue="0.33333333333333331" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="7Cl-FF-IoP" firstAttribute="top" secondItem="X85-KK-tdJ" secondAttribute="top" id="3Jq-Nf-hc8"/>
+                            <constraint firstItem="6dT-E5-73f" firstAttribute="leading" secondItem="X85-KK-tdJ" secondAttribute="leading" id="EjO-yt-BTd"/>
+                            <constraint firstItem="7Cl-FF-IoP" firstAttribute="leading" secondItem="X85-KK-tdJ" secondAttribute="leading" id="Nig-Mx-Mxj"/>
+                            <constraint firstItem="6dT-E5-73f" firstAttribute="top" secondItem="7Cl-FF-IoP" secondAttribute="bottom" constant="91" id="XXM-ZE-WH1"/>
+                            <constraint firstAttribute="trailing" secondItem="7Cl-FF-IoP" secondAttribute="trailing" id="nLp-4t-tKS"/>
+                            <constraint firstAttribute="trailing" secondItem="6dT-E5-73f" secondAttribute="trailing" id="vsF-rO-Nid"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="MET" image="MetButtonIconUnselected" selectedImage="MetButtonIconSelected" id="nE7-B3-vL8"/>
+                    <connections>
+                        <outlet property="backgroundCardView" destination="6dT-E5-73f" id="A6z-K1-SKh"/>
+                        <outlet property="backgroundView" destination="X85-KK-tdJ" id="NZ3-5O-vsJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KRP-44-C0Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="287" y="912"/>
+        </scene>
+        <!--ME-->
+        <scene sceneID="lsu-Gc-dIx">
+            <objects>
+                <viewController storyboardIdentifier="KONMeViewController" id="CkM-S9-rIq" customClass="KONMeViewController" customModule="Kontak" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qcX-ao-gVe"/>
+                        <viewControllerLayoutGuide type="bottom" id="Nv5-V2-esT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="r5D-Ly-q3D" customClass="KONBackgroundView" customModule="Kontak" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jcs-ny-oQb" customClass="KONNavigationBar" customModule="Kontak" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="62N-l5-ES0"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="KONTAK" id="L1F-JJ-6Kv"/>
+                                </items>
+                            </navigationBar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CqB-0G-9Cc" customClass="KONBackgroundCardView" customModule="Kontak" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="171" width="375" height="496"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="496" id="3lm-t2-PyE"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.72549019607843135" blue="0.66274509803921566" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="Jcs-ny-oQb" firstAttribute="leading" secondItem="r5D-Ly-q3D" secondAttribute="leading" id="5Oo-gf-leL"/>
+                            <constraint firstAttribute="trailing" secondItem="CqB-0G-9Cc" secondAttribute="trailing" id="C55-0j-1Kz"/>
+                            <constraint firstItem="CqB-0G-9Cc" firstAttribute="leading" secondItem="r5D-Ly-q3D" secondAttribute="leading" id="OYg-bo-Swr"/>
+                            <constraint firstItem="CqB-0G-9Cc" firstAttribute="top" secondItem="Jcs-ny-oQb" secondAttribute="bottom" constant="91" id="ZKl-DH-AyG"/>
+                            <constraint firstItem="Jcs-ny-oQb" firstAttribute="top" secondItem="r5D-Ly-q3D" secondAttribute="top" id="oSU-hl-3Zp"/>
+                            <constraint firstAttribute="trailing" secondItem="Jcs-ny-oQb" secondAttribute="trailing" id="qef-MV-Ik8"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="ME" image="MeButtonIconUnselected" selectedImage="MeButtonIconSelected" id="wZb-sr-BcQ"/>
+                    <connections>
+                        <outlet property="backgroundCardView" destination="CqB-0G-9Cc" id="d8P-PJ-S5K"/>
+                        <outlet property="backgroundView" destination="r5D-Ly-q3D" id="4q5-a4-1hy"/>
+                        <outlet property="navBar" destination="Jcs-ny-oQb" id="tPb-pF-ELV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vJX-V9-aDk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1396" y="911.69415292353835"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="HRC-2z-YM7">
+            <objects>
+                <tabBarController id="665-P4-KJA" customClass="KONTabBarController" customModule="Kontak" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="TX0-b0-MzK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="CkM-S9-rIq" kind="relationship" relationship="viewControllers" id="5Td-Gc-z9o"/>
+                        <segue destination="Llw-su-v2e" kind="relationship" relationship="viewControllers" id="A6i-2n-Sbn"/>
+                        <segue destination="OmL-E1-LSM" kind="relationship" relationship="viewControllers" id="7Ed-Kg-geu"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Tih-4l-nlw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-554" y="158"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="MeButtonIconSelected" width="24" height="28"/>
+        <image name="MeButtonIconUnselected" width="24" height="28"/>
+        <image name="MetButtonIconSelected" width="29" height="32"/>
+        <image name="MetButtonIconUnselected" width="29" height="32"/>
+        <image name="NearbyButtonIconSelected" width="22" height="28"/>
+        <image name="NearbyButtonIconUnselected" width="22" height="28"/>
+    </resources>
 </document>
