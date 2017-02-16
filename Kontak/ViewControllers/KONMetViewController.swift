@@ -8,33 +8,44 @@
 
 import UIKit
 
-class KONMetViewController: UIViewController {
+class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     // MARK: - Properties
     @IBOutlet var backgroundView: KONBackgroundView!
     @IBOutlet weak var backgroundCardView: KONBackgroundCardView!
+    @IBOutlet weak var tableView: UITableView!
     
-    
+    var userManager: KONUserManager!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Get User Manager Singleton
+        userManager = KONUserManager.sharedInstance
+        userManager.metControllerUpdateCallback = {[weak self] in
+            guard let `self` = self else { return }
+            
+            self.tableView.reloadData()
+        }
 
-        // Set Up Background View
+        // Set Up BackgroundView
         backgroundView.setBackgroundImage(image: #imageLiteral(resourceName: "MetBackgroundFill"))
         
-        // Set Up BackgroundCard View
+        // Set Up BackgroundCardView
         backgroundCardView.roundCorner(corners: .topRight)
         
         // Set Up TabBarItem
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.konRed], for: .selected)
         
-        
+        // Set Up TableView
+        tableView.dataSource = self
+        tableView.delegate = self
 
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        KONUserManager.sharedInstance.queryForMetUsers()
     }
 
     override func didReceiveMemoryWarning() {
@@ -43,6 +54,39 @@ class KONMetViewController: UIViewController {
     }
     
 
+    // MARK: - UITableViewDelegate Protocol
+    
+    
+    
+    // MARK: - UITableViewDataSource Protocol
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return userManager.metUsers.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: KONMetTableCellReuseIdentifier) as! KONMetTableViewCell
+        
+//        cell.nameLabel.text = userManager.nearbyUsers[indexPath.row].name.fullName
+        cell.uuidLabel.text = userManager.metUsers.userIDs[indexPath.row]
+        
+        
+        return cell
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*
     // MARK: - Navigation
 

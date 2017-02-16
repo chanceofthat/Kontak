@@ -18,10 +18,14 @@ class KONMetUser: KONUser {
     var instagramUsername: String?
     var facebookUsername: String?
     
-    init(firstName: String!, lastName: String?) {
+    init(firstName: String!, lastName: String?, userID: String) {
         super.init()
-        
+        self.userID = userID
         name = Name(firstName: firstName, lastName: lastName)
+    }
+    
+    convenience init(userID: String) {
+        self.init(firstName: nil, lastName: nil, userID: userID)
     }
 
     

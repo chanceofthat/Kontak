@@ -58,26 +58,41 @@ class KONUser: NSObject {
     }
     
     // MARK: - Properties
-    private var userIDString: String!
+    private var _userID: String!
     var userID: String {
         get {
-            if (userIDString != nil) {
-                return userIDString
+            if (_userID != nil) {
+                return _userID
             }
+            
+            //TESTING ONLY
+            _userID = "Device3"
+            return _userID
+            //
+
             let defaults = UserDefaults.standard
             if let id = defaults.value(forKey: KONDefaultsUserIDKey) as? String {
-                userIDString = id
+                _userID = id
             }
             else {
-                userIDString = UUID().uuidString
-                defaults.setValue(userIDString, forKey: KONDefaultsUserIDKey)
+                _userID = UUID().uuidString
+                defaults.setValue(self.userID, forKey: KONDefaultsUserIDKey)
             }
-            return userIDString
+            return _userID
+        }
+        set(userID) {
+            if _userID == nil {
+                _userID = userID
+            }
         }
     }
     var name: Name!
     var profilePicture: UIImage?
-    var location: KONLocation?
+    var location: KONLocation? {
+        didSet {
+            KONUserManager.sharedInstance.networkManager.observeDatabaseForPotentialUsersInRange()
+        }
+    }
 
     
 

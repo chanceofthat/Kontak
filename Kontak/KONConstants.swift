@@ -59,9 +59,14 @@ extension CALayer {
 
 // MARK: - Strings
 let KONNearbyTableCellReuseIdentifier = "KONNearbyTableCellReuseIdentifier"
+let KONMetTableCellReuseIdentifier = "KONMetTableCellReuseIdentifier"
+
 let KONDefaultsUserIDKey = "KONUserIDKey"
 
-// MARK: Location
+// MARK: - Location
 let KONRegionRadius: Double = 20
 let KONRegionIdentifier = "KONRegionIdentifier"
+
+// MARK: - Meet Criteria
+let KONMeetDuration: TimeInterval = 0.5 //minutes
 
