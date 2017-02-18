@@ -64,7 +64,9 @@ let KONMetTableCellReuseIdentifier = "KONMetTableCellReuseIdentifier"
 let KONDefaultsUserIDKey = "KONUserIDKey"
 
 // MARK: - Location
-let KONRegionRadius: Double = 20
+let KONRegionRadius: Double = 50
+let KONRegionRange: Int = 7
+let KONNearbyRange: Int = 9
 let KONRegionIdentifier = "KONRegionIdentifier"
 
 // MARK: - Meet Criteria

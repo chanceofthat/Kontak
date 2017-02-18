@@ -72,8 +72,8 @@ class KONNetworkManager: NSObject {
     }
     
     func updateLocationForUser(user: KONMeUser) {
-        if let location = user.location {
-            databaseRef.child("userLocations/\(user.userID)/location").setValue(["latitude" : location.latitude, "longitude" : location.longitude])//, "timestamp" : location.timestamp.description(with: Locale.current)])
+        if let location = user.locationHash {
+            databaseRef.child("userLocations/\(user.userID)").setValue(["location" : location])//, "timestamp" : location.timestamp.description(with: Locale.current)])
         }
     }
     
@@ -83,52 +83,40 @@ class KONNetworkManager: NSObject {
         for userID in userIDs {
             databaseRef.child("locationRequestedUsers/\(userID)").setValue(["locationNeeded" : true])
         }
-        
-//        usersInRegion.usersInLonRange.removeAll()
-//        usersInRegion.usersInLatRange.removeAll()
     }
     
     
     func updateDatabaseWithNearbyUsersIDs() {
-//        let latSet: Set<String> = Set(usersNearby.usersInLatRange)
-//        let lonSet: Set<String> = Set(usersNearby.usersInLonRange)
-        
-//        let nearbyUserSet = latSet.intersection(lonSet)
         
         let lastKnownNearbyUsersQueryRef = databaseRef.child("nearbyUsers/\(userManager.meUser.userID)/nearby")
         lastKnownNearbyUsersQueryRef.observeSingleEvent(of: .value, with: {[weak self] (nearbySnapshot) in
             guard let `self` = self else {return}
             
-            print(nearbySnapshot)
             let nearbyUsers = nearbySnapshot.value as? [String : [String : AnyObject]] ?? [:]
-            
-            print(Array(nearbyUsers.keys))
-            
             let lastKnownNearbyUserSet: Set<String> = Set(Array(nearbyUsers.keys))
             
             let missingNearbyUsers = lastKnownNearbyUserSet.subtracting(self.userIDsNearby)
             print(missingNearbyUsers)
             
-            for userID in missingNearbyUsers {
-                // TODO: - Remove Updating of Other Users
-//                self.databaseRef.child("nearbyUsers/\(userID)/nearby/\(self.userManager.meUser.userID)").removeValue()
-                
-                self.databaseRef.child("nearbyUsers/\(self.userManager.meUser.userID)/nearby/\(userID)").removeValue()
-            }
+         
             
             
             let timestamp = ["timestamp" : Date().timeIntervalSince1970]
             
-            for userID in self.userIDsNearby {
+            for userID in Set(self.userIDsNearby + missingNearbyUsers).subtracting(self.userManager.metUsers.userIDs) {
                 // TODO: - Remove Updating of Other Users
 //                self.databaseRef.child("nearbyUsers/\(userID)/nearby/\(self.userManager.meUser.userID)").childByAutoId().setValue(timestamp)
                 
                 self.databaseRef.child("nearbyUsers/\(self.userManager.meUser.userID)/nearby/\(userID)").childByAutoId().setValue(timestamp)
             }
+            
+            for userID in missingNearbyUsers {
+                // TODO: - Remove Updating of Other Users
+                //                self.databaseRef.child("nearbyUsers/\(userID)/nearby/\(self.userManager.meUser.userID)").removeValue()
+                
+                self.databaseRef.child("nearbyUsers/\(self.userManager.meUser.userID)/nearby/\(userID)").removeValue()
+            }
         })
-        
-//        usersNearby.usersInLonRange.removeAll()
-//        usersNearby.usersInLatRange.removeAll()
     }
     
     
@@ -155,7 +143,7 @@ class KONNetworkManager: NSObject {
         observeDatabaseForLocationRequest()
         observeDatabaseForNearbyUsers()
         observeDatabaseForUsersInRegion()
-        observeDatabaseForUserInNearbyRange()
+        observeDatabaseForUsersInNearbyRange()
     }
     
     func observeDatabaseForLocationRequest() {
@@ -169,174 +157,65 @@ class KONNetworkManager: NSObject {
         })
     }
     
-    /*
     func observeDatabaseForUsersInRegion() {
-        
-        if let myLocation = userManager.meUser.location {
-            let locationRange = KONLocationManager.locationRangeFromLocation(location: myLocation, radius: 0.05)
-            
-            let latQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location/latitude").queryStarting(atValue: locationRange.latMin).queryEnding(atValue: locationRange.latMax)
-            
-            latQueryRef.observe(.value, with: {[weak self] (snapshot) in
-                guard let `self` =  self else {return}
-                
-                if let users = snapshot.value as? [String: Any] {
-                    var userIDs: Set<String> = Set(users.keys)
-                    userIDs.remove(self.userManager.meUser.userID)
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs))
-                    self.usersInRegion.usersInLatRange.append(contentsOf: userIDs)
-                }
-                if self.usersInRegion.hasUsers {
-//                    self.updateDatabaseWithNearbyUsers()
-                    self.updateDatabaseWithLocationRequestForUsersInRegion()
-                }
-            })
-            
-            let lonQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location/longitude").queryStarting(atValue: locationRange.lonMin).queryEnding(atValue: locationRange.lonMax)
-            
-            lonQueryRef.observe(.value, with: { (snapshot) in
-                if let users = snapshot.value as? [String: Any] {
-                    var userIDs: Set<String> = Set(users.keys)
-                    userIDs.remove(self.userManager.meUser.userID)
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs))
-                    self.usersInRegion.usersInLonRange.append(contentsOf: userIDs)
-                }
-                if self.usersInRegion.hasUsers {
-//                    self.updateDatabaseWithNearbyUsers()
-                    self.updateDatabaseWithLocationRequestForUsersInRegion()
-                }
-            })
-        }
-    }
-    
-    func observeDatabaseForNearbyUsers() {
-        if let myLocation = userManager.meUser.location {
-            let locationRange = KONLocationManager.locationRangeFromLocation(location: myLocation, radius: 0.003)
-            
-            let latQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location/latitude").queryStarting(atValue: locationRange.latMin).queryEnding(atValue: locationRange.latMax)
-            
-            latQueryRef.observe(.value, with: {[weak self] (snapshot) in
-                guard let `self` =  self else {return}
-                
-                if let users = snapshot.value as? [String: Any] {
-                    var userIDs: Set<String> = Set(users.keys)
-                    userIDs.remove(self.userManager.meUser.userID)
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs))
-                    self.usersNearby.usersInLatRange.append(contentsOf: userIDs)
-                }
-                if self.usersNearby.hasUsers {
-                    self.updateDatabaseWithNearbyUsers()
-                }
-            })
-            
-            let lonQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location/longitude").queryStarting(atValue: locationRange.lonMin).queryEnding(atValue: locationRange.lonMax)
-            
-            lonQueryRef.observe(.value, with: { (snapshot) in
-                if let users = snapshot.value as? [String: Any] {
-                    var userIDs: Set<String> = Set(users.keys)
-                    userIDs.remove(self.userManager.meUser.userID)
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs))
-                    self.usersNearby.usersInLonRange.append(contentsOf: userIDs)
-                }
-                if self.usersNearby.hasUsers {
-                    self.updateDatabaseWithNearbyUsers()
-                }
-            })
-        }
-    }
-    */
-    
-    func observeDatabaseForUsersInRegion() {
-        observeDatabseForUsersInRange(range: 50) {[weak self] (usersInRange) in
+        observeDatabaseForUsersInRange(range: KONRegionRange) {[weak self] (successful) in
+            if !successful { return }
             guard let `self` = self else { return }
             
-            print(usersInRange)
-            
-            let latSet: Set<String> = Set(usersInRange.usersInLatRange)
-            let lonSet: Set<String> = Set(usersInRange.usersInLonRange)
-            
-            self.userIDsInRegion.append(contentsOf: latSet.intersection(lonSet))
-            self.updateDatabaseWithLocationRequestForUsersIDs(userIDs: self.userIDsInRegion as [String])
+            print("Users in Region Range: \(self.userIDsInRegion)")
+            self.updateDatabaseWithLocationRequestForUsersIDs(userIDs: self.userIDsInRegion)
             
         }
     }
     
-    func observeDatabaseForUserInNearbyRange() {
-        observeDatabseForUsersInRange(range: 3) {[weak self] (usersInRange) in
+    func observeDatabaseForUsersInNearbyRange() {
+        observeDatabaseForUsersInRange(range: KONNearbyRange) {[weak self] (successful) in
+            if !successful { return }
             guard let `self` = self else { return }
             
-            let latSet: Set<String> = Set(usersInRange.usersInLatRange)
-            let lonSet: Set<String> = Set(usersInRange.usersInLonRange)
-            
-            self.userIDsNearby = Array(latSet.intersection(lonSet))
-            print("Users In Nearby Range: \(self.userIDsNearby)")
-            
+            print("Users in Nearby Range: \(self.userIDsNearby)")
             self.updateDatabaseWithNearbyUsersIDs()
-            
         }
     }
     
-    private func observeDatabseForUsersInRange(range radius: Double, completionHandler: @escaping ((UsersInRange) -> Void)) {
-        guard let myLocation = userManager.meUser.location else { return }
+    func observeDatabaseForUsersInRange(range: Int, completionHandler: @escaping ((Bool) -> Void)) {
+        guard let myLocation = userManager.meUser.locationHash else { return }
         
-        var usersInRange: UsersInRange = UsersInRange()
-
-        let locationRange = KONLocationManager.locationRangeFromLocation(location: myLocation, radius: radius)
+        let startHash = String(myLocation.characters.prefix(range))
+        let endHash = String(myLocation.characters.prefix(range)) + "~"
         
-        
-        let latQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location/latitude").queryStarting(atValue: locationRange.latMin).queryEnding(atValue: locationRange.latMax)
-        
-        latQueryRef.observe(.value, with: {[weak self] (snapshot) in
-            guard let `self` =  self else {return}
+        let locationQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location").queryStarting(atValue: startHash).queryEnding(atValue: endHash)
+        locationQueryRef.observe(.value, with: { (locationSnapshot) in
             
-            if let users = snapshot.value as? [String: Any] {
+            if let users = locationSnapshot.value as? [String: Any] {
+                
                 var userIDs: Set<String> = Set(users.keys)
                 userIDs.remove(self.userManager.meUser.userID)
-                if radius == 50 {
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs + self.userIDsInRegion))
+                
+                if range == KONRegionRange {
+                    let previousUserIDsInRegion = self.userIDsInRegion
+                    self.userIDsInRegion = Array(userIDs)
+                    userIDs.subtract(previousUserIDsInRegion)
+                    
+                    if userIDs.count > 0 {
+                        completionHandler(true)
+                    }
                 }
-                else {
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs + self.userIDsNearby))
+                else if range == KONNearbyRange {
+                    let previousUserIDsNearby = self.userIDsNearby
+                    self.userIDsNearby = Array(userIDs)
+                    let lostUserIDsNearby = Set(previousUserIDsNearby).subtracting(userIDs)
+                    
+                    
+                    userIDs.subtract(self.userManager.metUsers.userIDs + previousUserIDsNearby)
+                    if userIDs.count > 0 || lostUserIDsNearby.count > 0 {
+                        completionHandler(true)
+                    }
                 }
-                usersInRange.usersInLatRange = Array(userIDs)
-                print("UsersInLATRange: \(usersInRange.usersInLatRange)")
-            }
-            if usersInRange.hasUsers {
-                completionHandler(usersInRange)
-            }
-        })
-        
-        let lonQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location/longitude").queryStarting(atValue: locationRange.lonMin).queryEnding(atValue: locationRange.lonMax)
-        
-        
-        lonQueryRef.observe(.value, with: { (snapshot) in
-            if let users = snapshot.value as? [String: Any] {
-                var userIDs: Set<String> = Set(users.keys)
-                userIDs.remove(self.userManager.meUser.userID)
-                if radius == 50 {
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs + self.userIDsInRegion))
-                }
-                else {
-                    userIDs.subtract(Set(self.userManager.metUsers.userIDs + self.userIDsNearby))
-                }
-                usersInRange.usersInLonRange = Array(userIDs)
-                print("UsersInLONRange: \(usersInRange.usersInLonRange)")
-            }
-            
-            
-            if usersInRange.hasUsers {
-                completionHandler(usersInRange)
+                completionHandler(false)
             }
         })
     }
-    
-    
-    
-    
-    
-    
-    
-    
     
     func observeDatabaseForNearbyUsers() {
         let nearbyObserveRef = databaseRef.child("nearbyUsers/\(userManager.meUser.userID)/nearby/").queryOrderedByValue()
@@ -402,16 +281,4 @@ class KONNetworkManager: NSObject {
             updateDatabaseWithMetUsers(userID: userID)
         }
     }
-    
-    func processUsersInRegion() {
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-
 }
