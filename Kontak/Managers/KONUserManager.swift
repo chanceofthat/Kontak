@@ -7,15 +7,15 @@
 //
 
 import UIKit
-import CoreLocation
+//import CoreLocation
 
 class KONUserManager: NSObject, KONLocationManagerDelegate {
     
     struct MetUsers {
-        var metUsers: [KONMetUser] = []
+        var users: [KONMetUser] = []
         var userIDs: [String] {
             get {
-                return metUsers.flatMap({ (user: KONMetUser) -> String in
+                return users.flatMap({ (user: KONMetUser) -> String in
                     return user.userID
                 })
             }
@@ -23,12 +23,12 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
         
         var count: Int {
             get {
-                return metUsers.count
+                return users.count
             }
         }
         
         func userForID(userID: String) -> KONMetUser? {
-            for user in metUsers {
+            for user in users {
                 if user.userID == userID {
                     return user
                 }
@@ -38,7 +38,7 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
         
         func userIndexForUserID(userID: String) -> Int? {
             if let user = userForID(userID: userID) {
-                return metUsers.index(of: user)
+                return users.index(of: user)
             }
             return nil
         }
@@ -47,8 +47,8 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
     // MARK: - Properties
     static let sharedInstance: KONUserManager = KONUserManager()
     
-    var networkManager: KONNetworkManager!
-    var locationManager: KONLocationManager!
+    lazy var networkManager: KONNetworkManager = KONNetworkManager.sharedInstance
+    lazy var locationManager: KONLocationManager = KONLocationManager.sharedInstance
     
     var meUser: KONMeUser!
     var nearbyUsers: [KONNearbyUser] = []
@@ -59,46 +59,68 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
         }
     }
     
+    // Callbacks
     var metControllerUpdateCallback: (() -> Void)?
+    var meUserAvailableCallbacks: [(() -> Void)] = [] {
+        didSet {
+            if meUserAvailableCallbacks.count > 0 {
+                updateMeUserRecord()
+            }
+        }
+    }
     
     // MARK: - Init
     private override init() {
         super.init()
-        
+    }
+    
+    func start() {
+        locationManager.delegate = KONUserManager.sharedInstance
+
         // Init Me User
         populateMeUser()
         
-        // Init Managers 
-        networkManager = KONNetworkManager()
-        locationManager = KONLocationManager()
-        locationManager.delegate = self
-        
-        
         createDummyNearbyUsers()
-
     }
     
     func populateMeUser() {
         meUser = KONMeUser(firstName: "Chance", lastName: "Daniel")
     }
     
-    func updateKONMeUserRecord() {
+    func updateMeUserRecord() {
         networkManager.updateDatabaseWithNewUser(user: meUser)
+        for callback in meUserAvailableCallbacks {
+            callback()
+        }
+        meUserAvailableCallbacks.removeAll()
     }
     
-    func updateMetUsersWithUserIDs(userIDs: [String]) {
-        let newMetUserIDSet = Set(userIDs).subtracting(metUsers.userIDs)
-        let deletedMetUserIDSet = Set(metUsers.userIDs).subtracting(userIDs)
-        
-        for userID in newMetUserIDSet {
-            metUsers.metUsers.append(KONMetUser(userID: userID))
+    func addMetUsersWithUserIDs(userIDs: [String]) {
+        for userID in userIDs {
+            metUsers.users.append(KONMetUser(userID: userID))
+            networkManager.observeDatabaseForUserValueChangesFor(userID: userID)
         }
-        
-        for userID in deletedMetUserIDSet {
+    }
+    
+    func removeMetUsersWithUserIDs(userIDs: [String]) {
+        for userID in userIDs {
             if let index = metUsers.userIndexForUserID(userID: userID) {
-                metUsers.metUsers.remove(at: index)
+                metUsers.users.remove(at: index)
             }
         }
+    }
+    
+    func updateMetUsersWithUserIDs(userIDs: [String : [String : Any]]) {
+        for (userID, infoDict) in userIDs {
+            if let user = metUsers.userForID(userID: userID) {
+                user.setValuesForKeys(infoDict)
+                metControllerUpdateCallback?()
+            }
+        }
+    }
+    
+    func updateMeUserWithNewLocation() {
+        locationManager.requestLocation()
     }
     
     // MARK: - Fake Data
@@ -110,8 +132,11 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
     
     
     // MARK: - KONLocationManagerDelegate
-    func didUpdateCurrentLocation(location: CLLocation) {
-        meUser.location = KONUser.KONLocation(location: location)
+    
+    func didUpdateCurrentLocation(locationHash: String) {
+      
+        meUser.locationHash = locationHash
+//        meUser.location = KONUser.KONLocation(location: location)
         networkManager.updateLocationForUser(user: meUser)
     }
     

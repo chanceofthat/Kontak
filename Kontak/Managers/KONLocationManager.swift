@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 
 protocol KONLocationManagerDelegate: class {
-    func didUpdateCurrentLocation(location: CLLocation)
+    func didUpdateCurrentLocation(locationHash: String)
 }
 
 private extension Double {
@@ -21,6 +21,7 @@ private extension Double {
     }
 }
 
+/*
 extension KONLocationManager {
     struct KONLocationRange {
         var latMin: Double
@@ -30,13 +31,16 @@ extension KONLocationManager {
         
     }
     static func locationRangeFromLocation(location: KONUser.KONLocation, radius: Double) -> KONLocationRange {
-
+        let radius = radius/1000
+        
         return KONLocationRange.init(latMin: location.latitude - (radius / 111.12),
                               latMax: location.latitude + (radius / 111.12),
                               lonMin: location.longitude - radius / fabs(cos(location.latitude.radians) * 111.12),
                               lonMax: location.longitude + radius / fabs(cos(location.latitude.radians) * 111.12))
+        
     }
 }
+ */
 
 class KONLocationManager: NSObject, CLLocationManagerDelegate {
     
@@ -45,15 +49,25 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     // MARK: - Properties
+    static let sharedInstance: KONLocationManager = KONLocationManager()
+
     weak var delegate: KONLocationManagerDelegate?
     private var locationManager: CLLocationManager?
     private var lowPowerMode = false
     private var didRecentlyUpdateLocation = false
     var status: LocationManagerStatus = .notStarted
     
-    override init() {
+    // Callbacks
+    var locationAvailableCallbacks: [(() -> Void)] = []
+
+    
+    // MARK: - Init
+    private override init() {
         super.init()
         
+    }
+    
+    func start() {
         startLocationManager()
     }
     
@@ -144,20 +158,27 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
                 let region = CLCircularRegion(center: center, radius: KONRegionRadius, identifier: KONRegionIdentifier)
                 locationManager.startMonitoring(for: region)
             }
-            didRecentlyUpdateLocation = false
-            locationManager.startUpdatingLocation()
-            locationManager.requestLocation()
+            requestLocation()
         }
     }
     
-    // MARK:- Standard Location Services
+    // MARK: - Standard Location Services
     func startInStandardMode() {
         print("Starting In Standard Mode")
         status = .started
 
     }
     
-    // MARK:- CLLocationManagerDelegate
+    // MARK: - Helpers
+    func requestLocation() {
+        if let locationManager = locationManager {
+            didRecentlyUpdateLocation = false
+            locationManager.startUpdatingLocation()
+            locationManager.requestLocation()
+        }
+    }
+    
+    // MARK: - CLLocationManagerDelegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !didRecentlyUpdateLocation {
             if let latestLocation = locations.last {
@@ -167,7 +188,13 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
                     print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
                     didRecentlyUpdateLocation = true
                     manager.stopUpdatingLocation()
-                    self.delegate?.didUpdateCurrentLocation(location: latestLocation)
+                    self.delegate?.didUpdateCurrentLocation(locationHash: latestLocation.coordinate.geohash(length: 10))
+                
+                for callback in locationAvailableCallbacks {
+                    callback()
+                }
+                locationAvailableCallbacks.removeAll()
+            
 //                }
             }
         }

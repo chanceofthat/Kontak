@@ -56,7 +56,7 @@ class KONNearbyViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let cell = tableView.dequeueReusableCell(withIdentifier: KONNearbyTableCellReuseIdentifier) as! KONNearbyTableViewCell
         
-        cell.nameLabel.text = userManager.nearbyUsers[indexPath.row].name.fullName
+        cell.nameLabel.text = userManager.nearbyUsers[indexPath.row].name?.fullName
         
         
         return cell

@@ -72,7 +72,9 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let cell = tableView.dequeueReusableCell(withIdentifier: KONMetTableCellReuseIdentifier) as! KONMetTableViewCell
         
 //        cell.nameLabel.text = userManager.nearbyUsers[indexPath.row].name.fullName
-        cell.uuidLabel.text = userManager.metUsers.userIDs[indexPath.row]
+        let userIDs = userManager.metUsers.userIDs
+        cell.uuidLabel.text = userIDs[indexPath.row]
+        cell.nameLabel.text = userManager.metUsers.userForID(userID: userIDs[indexPath.row])?.name?.fullName
         
         
         return cell

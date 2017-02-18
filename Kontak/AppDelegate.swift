@@ -20,6 +20,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         FIRApp.configure()
+        _ = KONLocationManager.sharedInstance
+        _ = KONUserManager.sharedInstance
+        _ = KONNetworkManager.sharedInstance
+        
+        KONLocationManager.sharedInstance.start()
+        KONUserManager.sharedInstance.start()
+        KONNetworkManager.sharedInstance.start()
         
         return true
     }

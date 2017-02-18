@@ -12,7 +12,7 @@ import CoreLocation
 class KONUser: NSObject {
     
     struct Name {
-        let firstName: String!
+        var firstName: String?
         var lastName: String?
         
         init(firstName: String!, lastName: String?) {
@@ -20,17 +20,20 @@ class KONUser: NSObject {
             self.lastName = lastName
         }
         
-        var fullName: String {
+        var fullName: String? {
             get {
-                var name: String = firstName
-                if let lastName = lastName {
-                    name += (" " + lastName)
+                if var name: String = firstName {
+                    if let lastName = lastName {
+                        name += (" " + lastName)
+                    }
+                    return name
                 }
-                return name
+                return nil
             }
         }
     }
     
+    /*
     struct KONLocation {
         private let location: CLLocation!
         
@@ -56,6 +59,8 @@ class KONUser: NSObject {
             }
         }
     }
+    */
+
     
     // MARK: - Properties
     private var _userID: String!
@@ -86,14 +91,35 @@ class KONUser: NSObject {
             }
         }
     }
-    var name: Name!
+    var name: Name?
     var profilePicture: UIImage?
-    var location: KONLocation? {
-        didSet {
-            KONUserManager.sharedInstance.networkManager.observeDatabaseForPotentialUsersInRange()
+//    var location: KONLocation?
+    var locationHash: String?
+
+    override func setValue(_ value: Any?, forKey key: String) {
+        if let string = value as? String {
+            switch key {
+            case "firstName":
+                if name == nil {
+                    name = Name(firstName: string, lastName: nil)
+                }
+                else {
+                    name?.firstName = string
+                }
+
+                break
+            case "lastName":
+                if name == nil {
+                    name = Name(firstName: nil, lastName: string)
+                }
+                else {
+                    name?.lastName = string
+                }
+            default:
+                break
+            }
         }
     }
-
     
 
 }

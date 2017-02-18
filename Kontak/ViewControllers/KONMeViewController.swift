@@ -31,10 +31,6 @@ class KONMeViewController: UIViewController {
         }
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.konGreen], for: .selected)
         
-        
-        KONUserManager.sharedInstance.updateKONMeUserRecord()
-
-        
     }
 
     
