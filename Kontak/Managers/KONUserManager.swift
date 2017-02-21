@@ -120,6 +120,7 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
     }
     
     func updateMeUserWithNewLocation() {
+
         locationManager.requestLocation()
     }
     
@@ -136,7 +137,7 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
     func didUpdateCurrentLocation(locationHash: String) {
       
         meUser.locationHash = locationHash
-//        meUser.location = KONUser.KONLocation(location: location)
+        
         networkManager.updateLocationForUser(user: meUser)
     }
     

@@ -17,6 +17,7 @@ class KONDiagnosticsViewController: UIViewController {
     @IBOutlet weak var locationManagerStatusLabel: UILabel!
     @IBOutlet weak var locationDeltaTextField: UITextField!
     @IBOutlet weak var locationManagerSwitch: UISwitch!
+    @IBOutlet weak var overrideLocationSwitch: UISwitch!
     
     lazy var userManager: KONUserManager = KONUserManager.sharedInstance
     lazy var locationManager: KONLocationManager = KONLocationManager.sharedInstance
@@ -28,15 +29,18 @@ class KONDiagnosticsViewController: UIViewController {
         uuidTextField.text = userManager.meUser.userID
         updateLocationFields()
         locationManagerStatusLabel.text = "On"
+        
+        locationManager.locationUpdatedCallbacks.append {[weak self] in
+            guard let `self` = self else { return }
+            self.updateLocationFields()
+        }
+
+        overrideLocationSwitch.isOn = false
     }
 
     
     @IBAction func getLocationButtonPressed(_ sender: Any) {
         locationManager.requestLocation()
-        locationManager.locationAvailableCallbacks.append {[weak self] in
-            guard let `self` = self else { return }
-            self.updateLocationFields()
-        }
     }
     
     @IBAction func pushLocationButtonPressed(_ sender: Any) {
@@ -67,6 +71,8 @@ class KONDiagnosticsViewController: UIViewController {
         if let uuid = uuidTextField.text {
             networkManager.stop()
             networkManager.start()
+            locationManager.stop()
+            locationManager.start()
             userManager.meUser.userID = uuid
             
         }
@@ -75,11 +81,20 @@ class KONDiagnosticsViewController: UIViewController {
     @IBAction func locationManagerSwitchToggled(_ sender: Any) {
         if locationManagerSwitch.isOn {
             locationManagerStatusLabel.text = "On"
-            locationManager.startLocationManager()
+            locationManager.start()
         }
         else {
             locationManagerStatusLabel.text = "Off"
-            locationManager.stopLocationManager()
+            locationManager.stop()
+        }
+    }
+    
+    @IBAction func overrideLocationSwitchToggled(_ sender: Any) {
+        if overrideLocationSwitch.isOn {
+            locationManager.locationOverrideEnabled = true
+        }
+        else {
+            locationManager.locationOverrideEnabled = false
         }
     }
     
