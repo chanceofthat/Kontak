@@ -32,6 +32,7 @@
 		15DD1E4F1E4D2A6900D74F4C /* KONBackgroundCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DD1E4E1E4D2A6900D74F4C /* KONBackgroundCardView.swift */; };
 		15DD1E511E4D2F3300D74F4C /* KONTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DD1E501E4D2F3300D74F4C /* KONTabBarController.swift */; };
 		15E404A71E58000400938651 /* Geohash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E404A61E58000400938651 /* Geohash.swift */; };
+		15E404A91E58E25000938651 /* KONDiagnosticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E404A81E58E25000938651 /* KONDiagnosticsViewController.swift */; };
 		85A197FB34C7B34946DBA6FA /* libPods-Kontak.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E0338030B0CE64B2AA54542 /* libPods-Kontak.a */; };
 		E29E2728F055D030816810C9 /* libPods-KontakTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9529A6F05C28C08799D850B /* libPods-KontakTests.a */; };
 /* End PBXBuildFile section */
@@ -77,6 +78,7 @@
 		15DD1E4E1E4D2A6900D74F4C /* KONBackgroundCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONBackgroundCardView.swift; path = Views/KONBackgroundCardView.swift; sourceTree = "<group>"; };
 		15DD1E501E4D2F3300D74F4C /* KONTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONTabBarController.swift; path = ViewControllers/KONTabBarController.swift; sourceTree = "<group>"; };
 		15E404A61E58000400938651 /* Geohash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geohash.swift; sourceTree = "<group>"; };
+		15E404A81E58E25000938651 /* KONDiagnosticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONDiagnosticsViewController.swift; path = ViewControllers/KONDiagnosticsViewController.swift; sourceTree = "<group>"; };
 		32D19F10235A7E99EEC47C70 /* Pods-KontakTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KontakTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KontakTests/Pods-KontakTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9E0338030B0CE64B2AA54542 /* libPods-Kontak.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kontak.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9529A6F05C28C08799D850B /* libPods-KontakTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KontakTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -191,6 +193,7 @@
 				15DD1E431E4D008400D74F4C /* KONMeViewController.swift */,
 				15DD1E3A1E4CFFBA00D74F4C /* KONNearbyViewController.swift */,
 				15DD1E3F1E4D003000D74F4C /* KONMetViewController.swift */,
+				15E404A81E58E25000938651 /* KONDiagnosticsViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -435,6 +438,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15E404A91E58E25000938651 /* KONDiagnosticsViewController.swift in Sources */,
 				15DD1E4D1E4D23AD00D74F4C /* KONNavigationBar.swift in Sources */,
 				15D9B7C71E4CF838009EBBAF /* AppDelegate.swift in Sources */,
 				15DD1E441E4D008400D74F4C /* KONMeViewController.swift in Sources */,

@@ -34,6 +34,7 @@ class KONNetworkManager: NSObject {
     static let sharedInstance: KONNetworkManager = KONNetworkManager()
 
     var databaseRef: FIRDatabaseReference!
+    private var databaseObserverHandles: [FIRDatabaseHandle] = []
     private var startedDatabaseObservers = false
     private var userIDsInRegion: [String] = []
     private var userIDsNearby: [String] = []
@@ -63,6 +64,12 @@ class KONNetworkManager: NSObject {
             self.startLocationDependentDatabaseObservers()
         }
         
+    }
+    
+    func stop() {
+        for handle in databaseObserverHandles {
+            databaseRef.removeObserver(withHandle: handle)
+        }
     }
     
     // MARK: - Database Updates
@@ -185,7 +192,7 @@ class KONNetworkManager: NSObject {
         let endHash = String(myLocation.characters.prefix(range)) + "~"
         
         let locationQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location").queryStarting(atValue: startHash).queryEnding(atValue: endHash)
-        locationQueryRef.observe(.value, with: { (locationSnapshot) in
+        let observeHandle = locationQueryRef.observe(.value, with: { (locationSnapshot) in
             
             if let users = locationSnapshot.value as? [String: Any] {
                 
@@ -215,12 +222,13 @@ class KONNetworkManager: NSObject {
                 completionHandler(false)
             }
         })
+        databaseObserverHandles.append(observeHandle)
     }
     
     func observeDatabaseForNearbyUsers() {
         let nearbyObserveRef = databaseRef.child("nearbyUsers/\(userManager.meUser.userID)/nearby/").queryOrderedByValue()
         
-        nearbyObserveRef.observe(.childChanged, with: {[weak self] (nearbySnapshot) in
+        let observeHandle = nearbyObserveRef.observe(.childChanged, with: {[weak self] (nearbySnapshot) in
             guard let `self` = self else { return }
             
             let deviceTimestamps = nearbySnapshot.value as? [String : [String : AnyObject]] ?? [:]
@@ -234,34 +242,39 @@ class KONNetworkManager: NSObject {
                 }
             }
         })
+        databaseObserverHandles.append(observeHandle)
     }
     
     func observeDatabaseForMetUsers() {
         let metObserveRef = databaseRef.child("metUsers/\(userManager.meUser.userID)/met/").queryOrderedByKey()
         
-        metObserveRef.observe(.childAdded, with: {[weak self] (metSnapshot) in
+        let childAddedObserveHandle = metObserveRef.observe(.childAdded, with: {[weak self] (metSnapshot) in
             guard let `self` = self else { return }
             
             self.userManager.addMetUsersWithUserIDs(userIDs: [metSnapshot.key])
         })
+        databaseObserverHandles.append(childAddedObserveHandle)
         
-        metObserveRef.observe(.childRemoved, with: {[weak self] (lostSnapshot) in
+        let childRemovedObserveHandle = metObserveRef.observe(.childRemoved, with: {[weak self] (lostSnapshot) in
             guard let `self` = self else { return }
             
             self.userManager.removeMetUsersWithUserIDs(userIDs: [lostSnapshot.key])
         })
+        databaseObserverHandles.append(childRemovedObserveHandle)
     }
     
     func observeDatabaseForUserValueChangesFor(userID: String) {
         let userObserveRef = databaseRef.child("users/\(userID)")
         
-        userObserveRef.observe(.value, with: {[weak self] (userSnapshot) in
+        let observeHandle = userObserveRef.observe(.value, with: {[weak self] (userSnapshot) in
             guard let `self` = self else { return }
             
             print(userSnapshot)
             self.userManager.updateMetUsersWithUserIDs(userIDs: [userSnapshot.key : userSnapshot.value as? [String : Any] ?? [:]])
             
         })
+        databaseObserverHandles.append(observeHandle)
+        
     }
     
     // MARK: - Helpers

@@ -42,6 +42,18 @@ extension KONLocationManager {
 }
  */
 
+extension KONLocationManager {
+    static func coordinatesFromLocationHash(hash: String) -> (Double, Double) {
+        let coordinates = CLLocationCoordinate2D(geohash: hash)
+        return (coordinates.latitude, coordinates.longitude)
+    }
+    
+    static func adjustedCoordinatesForDelta(lat: Double, Lon: Double, delta: Double) -> (Double, Double) {
+        let delta = delta/1000
+        return((lat + (delta / 111.12)), (Lon + delta / fabs(cos(lat.radians) * 111.12)))
+    }
+}
+
 class KONLocationManager: NSObject, CLLocationManagerDelegate {
     
     enum LocationManagerStatus {
@@ -73,7 +85,8 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
     
     // MARK: Starting and Stopping Location Services
     func startLocationManager() {
-        
+        print("Starting Location Manager....")
+
         if locationManager == nil {
             locationManager = CLLocationManager()
         }
@@ -120,10 +133,13 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     func stopLocationManager() {
+        print("Stopping Location Manager....")
+
         status = .notStarted
         locationManager?.stopMonitoringSignificantLocationChanges()
         locationManager?.stopUpdatingLocation()
         locationManager = nil
+        
     }
     
     // MARK:- Sigificant Change Location Serivces
@@ -176,6 +192,10 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
             locationManager.startUpdatingLocation()
             locationManager.requestLocation()
         }
+    }
+    
+    func manuallySetLocationToHash(hash: String) {
+        self.delegate?.didUpdateCurrentLocation(locationHash: hash)
     }
     
     // MARK: - CLLocationManagerDelegate

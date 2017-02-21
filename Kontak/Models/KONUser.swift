@@ -71,7 +71,10 @@ class KONUser: NSObject {
             }
             
             //TESTING ONLY
-            _userID = "Device3"
+            _userID = "Device1"
+            #if (arch(i386) || arch(x86_64)) && os(iOS)
+                _userID = "Device2"
+            #endif
             return _userID
             //
 
@@ -86,9 +89,9 @@ class KONUser: NSObject {
             return _userID
         }
         set(userID) {
-            if _userID == nil {
+//            if _userID == nil {
                 _userID = userID
-            }
+//            }
         }
     }
     var name: Name?

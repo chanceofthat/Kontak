@@ -28,6 +28,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         KONUserManager.sharedInstance.start()
         KONNetworkManager.sharedInstance.start()
         
+        if let window = self.window {
+            if let tabBarController = window.rootViewController as? UITabBarController {
+                tabBarController.selectedIndex = 1;
+            }
+            
+        }
+        
         return true
     }
 
