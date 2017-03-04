@@ -9,7 +9,7 @@
 import UIKit
 //import CoreLocation
 
-class KONUserManager: NSObject, KONLocationManagerDelegate {
+class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEvaluationObserver {
     
     struct MetUsers {
         var users: [KONMetUser] = []
@@ -46,11 +46,8 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
 
     // MARK: - Properties
     static let sharedInstance: KONUserManager = KONUserManager()
-    
-    lazy var networkManager: KONNetworkManager = KONNetworkManager.sharedInstance
-    lazy var locationManager: KONLocationManager = KONLocationManager.sharedInstance
-    
-    var meUser: KONMeUser!
+        
+    dynamic var meUser: KONMeUser!
     var nearbyUsers: [KONNearbyUser] = []
     
     var metUsers: MetUsers = MetUsers() {
@@ -61,45 +58,50 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
     
     // Callbacks
     var metControllerUpdateCallback: (() -> Void)?
-    var meUserAvailableCallbacks: [(() -> Void)] = [] {
-        didSet {
-            if meUserAvailableCallbacks.count > 0 {
-                updateMeUserRecord()
-            }
-        }
-    }
     
     // MARK: - Init
+    
     private override init() {
         super.init()
     }
     
-    func start() {
-        locationManager.delegate = KONUserManager.sharedInstance
 
-        // Init Me User
-        populateMeUser()
+    func start() {
+        registerWithStateController()
         
-        createDummyNearbyUsers()
+//        createDummyNearbyUsers()
     }
+    
+    // MARK: - State Controller
+    
+    func registerWithStateController() {
+        let stateController = KONStateController.sharedInstance
+        
+        let value = true
+        let meUserTargetKey = KONTargetKeyInfo(targetName: self.className, key: #keyPath(KONUserManager.meUser), evaluationValue: value)
+        let meUserAvailableRule = KONStateControllerRule(name: Constants.StateController.RuleNames.meUserAvailableRule, targetKeys: [meUserTargetKey])
+        
+        meUserAvailableRule.ruleFailureCallback = {[weak self] (reason) in
+            guard let `self` = self else { return }
+            self.populateMeUser()
+        }
+        
+        stateController.registerRules(target: self, rules: [meUserAvailableRule])
+    }
+    
+    // MARK: - 
     
     func populateMeUser() {
         meUser = KONMeUser(firstName: "Chance", lastName: "Daniel")
     }
     
-    func updateMeUserRecord() {
-        networkManager.updateDatabaseWithNewUser(user: meUser)
-        for callback in meUserAvailableCallbacks {
-            callback()
-        }
-        meUserAvailableCallbacks.removeAll()
-    }
-    
     func addMetUsersWithUserIDs(userIDs: [String]) {
+        /*
         for userID in userIDs {
             metUsers.users.append(KONMetUser(userID: userID))
             networkManager.observeDatabaseForUserValueChangesFor(userID: userID)
         }
+         */
     }
     
     func removeMetUsersWithUserIDs(userIDs: [String]) {
@@ -120,8 +122,9 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
     }
     
     func updateMeUserWithNewLocation() {
-
+        /*
         locationManager.requestLocation()
+         */
     }
     
     // MARK: - Fake Data
@@ -137,8 +140,15 @@ class KONUserManager: NSObject, KONLocationManagerDelegate {
     func didUpdateCurrentLocation(locationHash: String) {
       
         meUser.locationHash = locationHash
-        
+        /*
         networkManager.updateLocationForUser(user: meUser)
+         */
+    }
+    
+    // MARK: - KONStateControllerEvaluationObserver Protocol
+    func didEvaluateRule(ruleName: String, successful: Bool, context: [String : Any]?) {
+//        print("Rule: \(ruleName), was \(successful ? "" : "not ")successful")
+        
     }
     
     

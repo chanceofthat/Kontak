@@ -14,19 +14,20 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         FIRApp.configure()
-        _ = KONLocationManager.sharedInstance
-        _ = KONUserManager.sharedInstance
-        _ = KONNetworkManager.sharedInstance
-        
-        KONLocationManager.sharedInstance.start()
-        KONUserManager.sharedInstance.start()
-        KONNetworkManager.sharedInstance.start()
+        let stateController = KONStateController.sharedInstance
+        stateController.start()
+//        _ = KONLocationManager.sharedInstance
+//        _ = KONUserManager.sharedInstance
+//        _ = KONNetworkManager.sharedInstance
+//        
+//        KONLocationManager.sharedInstance.start()
+//        KONUserManager.sharedInstance.start()
+//        KONNetworkManager.sharedInstance.start()
         
         if let window = self.window {
             if let tabBarController = window.rootViewController as? UITabBarController {
@@ -35,6 +36,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
         }
         
+        
+        /*
+        class TestClass: NSObject {
+            dynamic var foo = true
+            dynamic var bar = false
+        }
+        
+        let testClass = TestClass()
+        
+        // Test StateController
+        let stateController = KONStateController.sharedInstance
+//        stateController.registerForObservationOfKeyPaths(target: testClass, keyPaths: [#keyPath(TestClass.foo), #keyPath(TestClass.bar)])
+        let testRule = KONStateControllerRule(trueKeys: [#keyPath(TestClass.foo)], falseKeys: [#keyPath(TestClass.bar)])
+        stateController.registerRules(target: testClass, rules: [testRule])
+        testRule.ruleFailureCallback = { (name, reason) in
+            
+        }
+        testRule.ruleSuccessCallback = { (name) in
+            
+        }
+//        stateController.registerRule(rule: testRule)
+
+        testClass.bar = true
+        testClass.bar = false
+        stateController.shutdown()
+        
+        */
         return true
     }
 

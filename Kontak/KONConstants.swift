@@ -9,6 +9,26 @@
 import Foundation
 import UIKit
 
+// MARK: - NSObject 
+
+extension NSObject {
+    var className: String {
+        return NSStringFromClass(type(of: self))
+    }
+    
+    public class var className: String{
+        return NSStringFromClass(self)
+    }
+}
+
+// MARK: - Targetable
+
+//extension Bool: Targetable {
+//    func getValue() -> Bool {
+//        return self
+//    }
+//}
+
 // MARK: - Colors and Gradients
 extension UIColor {
     
@@ -71,4 +91,14 @@ let KONRegionIdentifier = "KONRegionIdentifier"
 
 // MARK: - Meet Criteria
 let KONMeetDuration: TimeInterval = 0.5 //minutes
+
+struct Constants {
+    struct StateController {
+        struct RuleNames {
+            static let meUserAvailableRule = "MeUserAvailableRule"
+            static let locationAvailableRule = "LocationAvailableRule"
+            static let meUserAndLocationAvailableRule = "MeUserAndLocationAvailableRule"
+        }
+    }
+}
 

@@ -30,17 +30,17 @@ class KONDiagnosticsViewController: UIViewController {
         updateLocationFields()
         locationManagerStatusLabel.text = "On"
         
-        locationManager.locationUpdatedCallbacks.append {[weak self] in
-            guard let `self` = self else { return }
-            self.updateLocationFields()
-        }
+//        locationManager.locationUpdatedCallbacks.append {[weak self] in
+//            guard let `self` = self else { return }
+//            self.updateLocationFields()
+//        }
 
         overrideLocationSwitch.isOn = false
     }
 
     
     @IBAction func getLocationButtonPressed(_ sender: Any) {
-        locationManager.requestLocation()
+        locationManager.updateLocation()
     }
     
     @IBAction func pushLocationButtonPressed(_ sender: Any) {

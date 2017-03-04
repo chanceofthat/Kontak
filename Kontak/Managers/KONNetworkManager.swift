@@ -15,7 +15,7 @@ protocol KONNetworkManagerDelegate: class {
 }
 
 // MARK: - KONNetworkManager
-class KONNetworkManager: NSObject {
+class KONNetworkManager: NSObject, KONStateControllerEvaluationObserver {
     
     // MARK: - Structs
     private struct UsersInRange {
@@ -33,8 +33,6 @@ class KONNetworkManager: NSObject {
     // MARK: - Properties
     static let sharedInstance: KONNetworkManager = KONNetworkManager()
     
-    var stateMachine = KONStateMachine()
-
     var databaseRef: FIRDatabaseReference!
     private var databaseObserverHandles: [FIRDatabaseHandle] = []
     private var locationBasedDatabaseObserverHandles: [FIRDatabaseHandle] = []
@@ -53,53 +51,35 @@ class KONNetworkManager: NSObject {
         // Set Up Database
         databaseRef = FIRDatabase.database().reference()
         
-        setupStateMachine()
         
-    }
-    
-    func setupStateMachine() {
-        
-        // Stopped
-        let stoppedState = KONState(name: "StoppedState", enterAction: nil)
-        stoppedState.addTransition(KONStateTransition(action: removeDatabaseObservers), fromStateName: "AwaitingMeUserAvailabilityState")
-        stoppedState.addTransition(KONStateTransition(action: removeDatabaseObservers), fromStateName: "AwaitingInitialLocationUpdateState")
-        stoppedState.addTransition(KONStateTransition(action: removeDatabaseObservers), fromStateName: "IdleObservingState")
-        stateMachine.addState(state: stoppedState)
-    
-        // Idle Not Observing
-        let idleNotObservingState = KONState(name: "IdleNotObservingState", enterAction: nil)
-        stateMachine.addState(state: idleNotObservingState)
-        
-        // Idle Database Observing
-        let idleObservingState = KONState(name: "IdleObservingState", enterAction: nil)
-        stateMachine.addState(state: idleObservingState)
-        
-        
-        stateMachine.start()
-
     }
     
 
     
     func start() {
-        
-        stateMachine.transitionToState(stateName: "IdleNotObservingState")
-        
-        userManager.meUserAvailableCallbacks.append {[weak self ] in
-            guard let `self` = self else { return }
-            self.startDatabaseObservers()
-        }
-        locationManager.locationUpdatedCallbacks.append {[weak self] in
-            guard let `self` = self else { return }
-//            self.startLocationDependentDatabaseObservers()
-            self.updateLocationBasedDatabaseObservers()
-        }
-        
+        registerWithStateController()
     }
     
     func stop() {
-        stateMachine.transitionToState(stateName: "StoppedState")
+
     }
+    
+    // MARK: - State Controller
+    
+    func registerWithStateController() {
+        let stateController = KONStateController.sharedInstance
+        /*
+        let meUserAndLocationAvailableRule = KONStateControllerRule(name: Constants.StateController.RuleNames.meUserAndLocationAvailableRule, trueKeys: [#keyPath(KONLocationManager.latestLocationHash), #keyPath(KONUserManager.meUser)], falseKeys: nil)
+        meUserAndLocationAvailableRule.ruleFailureCallback = {[weak self] (reason) in
+            guard let `self` = self else { return }
+
+        }
+        
+        stateController.registerRules(target: self, rules: [meUserAndLocationAvailableRule])
+ */
+    }
+    
+    // MARK: -
     
     func removeDatabaseObservers() {
         for handle in databaseObserverHandles {
@@ -108,15 +88,12 @@ class KONNetworkManager: NSObject {
     }
     
     // MARK: - Database Updates
-    func updateDatabaseWithNewUser(user: KONMeUser) {
+    func updateDatabaseWithMeUser(user: KONMeUser) {
         databaseRef.child("users").child(user.userID).setValue(["firstName" : user.name?.firstName, "lastName" : user.name?.lastName])
-        
     }
     
-    func updateLocationForUser(user: KONMeUser) {
-        if let location = user.locationHash {
-            databaseRef.child("userLocations/\(user.userID)").setValue(["location" : location])//, "timestamp" : location.timestamp.description(with: Locale.current)])
-        }
+    func updateLocationForUser(userID: String, locationHash: String) {
+        databaseRef.child("userLocations/\(userID)").setValue(["location" : locationHash])//, "timestamp" : location.timestamp.description(with: Locale.current)])
     }
     
     func updateDatabaseWithLocationRequestForUsersIDs(userIDs: [String]) {
@@ -183,11 +160,9 @@ class KONNetworkManager: NSObject {
         observeDatabaseForLocationRequest()
     }
     
-    func startLocationDependentDatabaseObservers() {
-        observeDatabaseForUsersInRegion()
-        observeDatabaseForUsersInNearbyRange()
-        
-        stateMachine.transitionToState(stateName: "IdleObservingState")
+    func startLocationDependentDatabaseObserversWithLocation(_ locationHash: String) {
+        observeDatabaseForUsersInRegionOfLocation(locationHash)
+        observeDatabaseForUsersInNearbyRangeOfLocation(locationHash)
     }
     
     func observeDatabaseForLocationRequest() {
@@ -202,8 +177,8 @@ class KONNetworkManager: NSObject {
         self.databaseObserverHandles.append(observeHandle)
     }
     
-    func observeDatabaseForUsersInRegion() {
-        observeDatabaseForUsersInRange(range: KONRegionRange) {[weak self] (successful) in
+    func observeDatabaseForUsersInRegionOfLocation(_ locationHash: String) {
+        observeDatabaseForUsersInRange(range: KONRegionRange, locationHash: locationHash) {[weak self] (successful) in
             if !successful { return }
             guard let `self` = self else { return }
             
@@ -213,8 +188,8 @@ class KONNetworkManager: NSObject {
         }
     }
     
-    func observeDatabaseForUsersInNearbyRange() {
-        observeDatabaseForUsersInRange(range: KONNearbyRange) {[weak self] (successful) in
+    func observeDatabaseForUsersInNearbyRangeOfLocation(_ locationHash: String) {
+        observeDatabaseForUsersInRange(range: KONNearbyRange, locationHash: locationHash) {[weak self] (successful) in
             if !successful { return }
             guard let `self` = self else { return }
             
@@ -223,11 +198,10 @@ class KONNetworkManager: NSObject {
         }
     }
     
-    func observeDatabaseForUsersInRange(range: Int, completionHandler: @escaping ((Bool) -> Void)) {
-        guard let myLocation = userManager.meUser.locationHash else { return }
+    func observeDatabaseForUsersInRange(range: Int, locationHash: String, completionHandler: @escaping ((Bool) -> Void)) {
         
-        let startHash = String(myLocation.characters.prefix(range))
-        let endHash = String(myLocation.characters.prefix(range)) + "~"
+        let startHash = String(locationHash.characters.prefix(range))
+        let endHash = String(locationHash.characters.prefix(range)) + "~"
         
         let locationQueryRef = databaseRef.child("userLocations").queryOrdered(byChild: "location").queryStarting(atValue: startHash).queryEnding(atValue: endHash)
         let observeHandle = locationQueryRef.observe(.value, with: { (locationSnapshot) in
@@ -251,7 +225,6 @@ class KONNetworkManager: NSObject {
                     self.userIDsNearby = Array(userIDs)
                     let lostUserIDsNearby = Set(previousUserIDsNearby).subtracting(userIDs)
                     
-                    
                     userIDs.subtract(self.userManager.metUsers.userIDs + previousUserIDsNearby)
                     if userIDs.count > 0 || lostUserIDsNearby.count > 0 {
                         completionHandler(true)
@@ -273,7 +246,7 @@ class KONNetworkManager: NSObject {
             let deviceTimestamps = nearbySnapshot.value as? [String : [String : AnyObject]] ?? [:]
             let timestampArray = Array(deviceTimestamps.values)
             
-            if let timestamps = timestampArray.flatMap({ (element: [String : AnyObject]) -> AnyObject in
+            if let timestamps = timestampArray.flatMap({ (element: [String : AnyObject]) -> Any in
                 return (element.first?.value)!
             }) as? [TimeInterval] {
                 if timestamps.count > 1 {
@@ -317,11 +290,11 @@ class KONNetworkManager: NSObject {
     }
     
     // MARK: - Helpers
-    func updateLocationBasedDatabaseObservers() {
+    func updateLocationBasedDatabaseObserversWithLocation(_ locationHash: String) {
         for observeHandle in locationBasedDatabaseObserverHandles {
             databaseRef.removeObserver(withHandle: observeHandle)
         }
-        startLocationDependentDatabaseObservers()
+        startLocationDependentDatabaseObserversWithLocation(locationHash)
     }
     
     func processTimestampsForUserID(timestamps: [TimeInterval], userID: String) {
@@ -339,5 +312,34 @@ class KONNetworkManager: NSObject {
         if (meetDuration > KONMeetDuration) {
             updateDatabaseWithMetUsers(userID: userID)
         }
+    }
+    
+    // MARK: - KONStateControllerEvaluationObserver Protocol
+    func didEvaluateRule(ruleName: String, successful: Bool, context: [String : Any]?) {
+//        print("Rule: \(ruleName), was \(successful ? "" : "not ")successful")
+        if !successful { return }
+        if ruleName == Constants.StateController.RuleNames.meUserAvailableRule {
+            print("MeUser Did Become Available")
+            let key = #keyPath(KONUserManager.meUser)
+            if let context = context, let user = context[key] as? KONMeUser {
+                updateDatabaseWithMeUser(user: user)
+                self.startDatabaseObservers()
+            }
+        }
+        else if ruleName == Constants.StateController.RuleNames.locationAvailableRule {
+            print("Location Did Become Available")
+            
+        }
+        else if ruleName == Constants.StateController.RuleNames.meUserAndLocationAvailableRule {
+            print("Location and Me User Available")
+            let locationKey = #keyPath(KONLocationManager.latestLocationHash)
+            let userKey = #keyPath(KONUserManager.meUser)
+            if let context = context, let locationHash = context[locationKey] as? String, let meUser = context[userKey] as? KONMeUser {
+                self.updateLocationForUser(userID: meUser.userID, locationHash: locationHash)
+                self.updateLocationBasedDatabaseObserversWithLocation(locationHash)
+            }
+        }
+        
+        
     }
 }

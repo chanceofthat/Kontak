@@ -33,7 +33,7 @@ extension KONLocationManager {
     }
 }
 
-class KONLocationManager: NSObject, CLLocationManagerDelegate {
+class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControllerEvaluationObserver {
     
     enum LocationManagerStatus {
         case notStarted, started, paused
@@ -42,61 +42,63 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - Properties
     static let sharedInstance: KONLocationManager = KONLocationManager()
     
-    var stateMachine = KONStateMachine()
-
     weak var delegate: KONLocationManagerDelegate?
-    private var locationManager: CLLocationManager?
+    dynamic private var locationManager: CLLocationManager?
+    private var latestLocation: CLLocation?
+    dynamic var latestLocationHash: String?
+    
     private var lowPowerMode = false
     private var didRecentlyUpdateLocation = false
+    
     var status: LocationManagerStatus = .notStarted
+    dynamic private var locationManagerStarted: Bool {
+        get {
+            return status == .started
+        }
+    }
     
     var locationOverrideEnabled = false
-    
-    // Callbacks
-//    var locationAvailableCallbacks: [(() -> Void)] = []
-    var locationUpdatedCallbacks: [(() -> Void)] = []
-
     
     // MARK: - Init
     private override init() {
         super.init()
-        
-        // Set Up States
-        
-        // Not Started
-        let stoppedState = KONState(name: "StoppedState", enterAction: nil)
-        stoppedState.addTransition(KONStateTransition(action: stopLocationManager), fromStateName: "IdleState")
-        stoppedState.addTransition(KONStateTransition(action: stopLocationManager), fromStateName: "UpdatingRegionState")
-        stoppedState.addTransition(KONStateTransition(action: stopLocationManager), fromStateName: "UpdatingLocationState")
-        stoppedState.addTransition(KONStateTransition(action: stopLocationManager), fromStateName: "PausedState")
-
-        stateMachine.addState(state: stoppedState)
-        
-        // Idle State
-        let idleState = KONState(name: "IdleState", enterAction: nil)
-        idleState.addTransition(KONStateTransition(action: startLocationManager), fromStateName: "StoppedState")
-        idleState.addTransition(KONStateTransition(action: requestLocation), fromStateName: "UpdatingRegionState")
-        stateMachine.addState(state: idleState)
-        
-        // Updating Region
-        let updatingRegionState = KONState(name: "UpdatingRegionState", enterAction: updateRegion)
-        stateMachine.addState(state: updatingRegionState)
-        
-        // Updating Location
-        let updatingLocationState = KONState(name: "UpdatingLocationState", enterAction: updateLocation)
-        stateMachine.addState(state: updatingLocationState)
-        
-        // Paused
-        
     }
     
     func start() {
-        stateMachine.start()
-        stateMachine.transitionToState(stateName: "IdleState")
+        registerWithStateController()
     }
     
     func stop() {
-        stateMachine.transitionToState(stateName: "StoppedState")
+
+    }
+    
+    // MARK: - State Controller
+    
+    func registerWithStateController() {
+        let stateController = KONStateController.sharedInstance
+        
+        let locationManagerStartedTargetKey = KONTargetKeyInfo(targetName: self.className, key: #keyPath(KONLocationManager.locationManager), evaluationValue: true)
+        let locationAvailableTargetKey = KONTargetKeyInfo(targetName: self.className, key: #keyPath(KONLocationManager.latestLocationHash), evaluationValue: true)
+        let locationAvailableRule = KONStateControllerRule(name: Constants.StateController.RuleNames.locationAvailableRule, targetKeys: [locationManagerStartedTargetKey, locationAvailableTargetKey])
+        locationAvailableRule.ruleFailureCallback = {[weak self] (failingKey) in
+            guard let `self` = self else { return }
+            if failingKey == #keyPath(KONLocationManager.locationManager) {
+                self.startLocationManager()
+            }
+            else {
+                self.updateLocation()
+            }
+        }
+        
+        let meUserAvailableTargetKey = KONTargetKeyInfo(targetName: KONUserManager.className, key: #keyPath(KONUserManager.meUser), evaluationValue: true)
+        let meUserAndLocationAvailableRule  = KONStateControllerRule(name: Constants.StateController.RuleNames.meUserAndLocationAvailableRule, targetKeys: [locationAvailableTargetKey, meUserAvailableTargetKey])
+        
+        meUserAndLocationAvailableRule.ruleSuccessCallback = {
+            
+        }
+        
+        stateController.registerRules(target: self, rules: [locationAvailableRule, meUserAndLocationAvailableRule])
+ 
     }
     
     // MARK: Starting and Stopping Location Services
@@ -177,10 +179,9 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
         }
         
         print("Starting In Region Monitoring Mode")
-        
-        stateMachine.transitionToState(stateName: "UpdatingRegionState")
-
+    
         status = .started
+        updateLocation()
     }
     
     func updateRegion() {
@@ -190,10 +191,10 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
                 let region = CLCircularRegion(center: center, radius: KONRegionRadius, identifier: KONRegionIdentifier)
                 locationManager.startMonitoring(for: region)
             }
-            self.stateMachine.transitionToState(stateName: "IdleState")
+
         }
         else {
-            stateMachine.transitionToState(stateName: "StoppedState")
+
         }
     }
     
@@ -204,7 +205,14 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - Helpers
-    func requestLocation() {
+    
+    func manuallySetLocationToHash(hash: String) {
+        self.delegate?.didUpdateCurrentLocation(locationHash: hash)
+//        updateLocation()
+    }
+    
+    func updateLocation() {
+        if locationManager?.delegate == nil { return }
         if let locationManager = locationManager {
             didRecentlyUpdateLocation = false
             locationManager.startUpdatingLocation()
@@ -212,36 +220,23 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func manuallySetLocationToHash(hash: String) {
-        self.delegate?.didUpdateCurrentLocation(locationHash: hash)
-        updateLocation()
-    }
-    
-    func updateLocation() {
-        didRecentlyUpdateLocation = true
-        for callback in locationUpdatedCallbacks {
-            callback()
-        }
-        locationManager?.stopUpdatingLocation()
-    }
-    
     // MARK: - CLLocationManagerDelegate
+    
+    //                let locationTimestamp = latestLocation.timestamp
+    
+    //                if (abs(Int32(locationTimestamp.timeIntervalSinceNow)) < 15) {
+
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !didRecentlyUpdateLocation {
             if let latestLocation = locations.last {
-//                let locationTimestamp = latestLocation.timestamp
-                
-//                if (abs(Int32(locationTimestamp.timeIntervalSinceNow)) < 15) {
-                    print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
+                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
                 if locationOverrideEnabled == false {
-                    self.delegate?.didUpdateCurrentLocation(locationHash: latestLocation.coordinate.geohash(length: 10))
                 }
-
-                
-                    self.stateMachine.transitionToState(stateName: "UpdatingLocationState")
-                
-            
-//                }
+                self.latestLocation = latestLocation
+                self.latestLocationHash = latestLocation.coordinate.geohash(length: 10)
+                self.didRecentlyUpdateLocation = true
+                self.locationManager?.stopUpdatingLocation()
             }
         }
     }
@@ -275,7 +270,7 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
         print("Did Exit Region")
         if let locationManager = locationManager {
             locationManager.stopMonitoring(for: region)
-            stateMachine.transitionToState(stateName: "UpdatingRegionState")
+
         }
     }
     
@@ -285,5 +280,11 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
         print("Region Monitoring Did Fail")
+    }
+    
+    // MARK: - KONStateControllerEvaluationObserver Protocol
+    func didEvaluateRule(ruleName: String, successful: Bool, context: [String : Any]?) {
+//        print("Rule: \(ruleName), was \(successful ? "" : "not ")successful")
+        
     }
 }

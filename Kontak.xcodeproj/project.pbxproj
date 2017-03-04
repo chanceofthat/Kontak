@@ -21,6 +21,8 @@
 		15062FFB1E5CB60F009ED548 /* KONStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15062FFA1E5CB60F009ED548 /* KONStateMachine.swift */; };
 		15062FFD1E5CB851009ED548 /* KONStateTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15062FFC1E5CB851009ED548 /* KONStateTransition.swift */; };
 		1580F9151E56295C00DB9C85 /* KONMetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1580F9141E56295C00DB9C85 /* KONMetTableViewCell.swift */; };
+		159415DC1E68BD78003E4424 /* KONStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159415DB1E68BD78003E4424 /* KONStateController.swift */; };
+		159415DF1E68C2C8003E4424 /* KONStateControllerRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */; };
 		15D9B7C71E4CF838009EBBAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */; };
 		15D9B7CC1E4CF838009EBBAF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15D9B7CA1E4CF838009EBBAF /* Main.storyboard */; };
 		15D9B7CE1E4CF838009EBBAF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15D9B7CD1E4CF838009EBBAF /* Assets.xcassets */; };
@@ -66,6 +68,8 @@
 		15062FFA1E5CB60F009ED548 /* KONStateMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateMachine.swift; path = StateMachine/KONStateMachine.swift; sourceTree = "<group>"; };
 		15062FFC1E5CB851009ED548 /* KONStateTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateTransition.swift; path = StateMachine/KONStateTransition.swift; sourceTree = "<group>"; };
 		1580F9141E56295C00DB9C85 /* KONMetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONMetTableViewCell.swift; path = Cells/KONMetTableViewCell.swift; sourceTree = "<group>"; };
+		159415DB1E68BD78003E4424 /* KONStateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateController.swift; path = State/KONStateController.swift; sourceTree = "<group>"; };
+		159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateControllerRule.swift; path = State/KONStateControllerRule.swift; sourceTree = "<group>"; };
 		15D9B7C31E4CF838009EBBAF /* Kontak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kontak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		15D9B7CB1E4CF838009EBBAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -153,6 +157,15 @@
 			name = Cells;
 			sourceTree = "<group>";
 		};
+		159415DD1E68BD8B003E4424 /* State */ = {
+			isa = PBXGroup;
+			children = (
+				159415DB1E68BD78003E4424 /* KONStateController.swift */,
+				159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */,
+			);
+			name = State;
+			sourceTree = "<group>";
+		};
 		15D9B7BA1E4CF838009EBBAF = {
 			isa = PBXGroup;
 			children = (
@@ -180,6 +193,7 @@
 				15E404A61E58000400938651 /* Geohash.swift */,
 				15DD1E471E4D05FF00D74F4C /* KONConstants.swift */,
 				15D9B7CA1E4CF838009EBBAF /* Main.storyboard */,
+				159415DD1E68BD8B003E4424 /* State */,
 				150336D21E4FCDD8007EE820 /* Models */,
 				150336D11E4FCDD0007EE820 /* Managers */,
 				15DD1E3C1E4CFFC400D74F4C /* ViewControllers */,
@@ -477,7 +491,9 @@
 				15DD1E3B1E4CFFBA00D74F4C /* KONNearbyViewController.swift in Sources */,
 				150336C41E4FCCD3007EE820 /* KONUser.swift in Sources */,
 				1580F9151E56295C00DB9C85 /* KONMetTableViewCell.swift in Sources */,
+				159415DF1E68C2C8003E4424 /* KONStateControllerRule.swift in Sources */,
 				150336CE1E4FCD3B007EE820 /* KONLocationManager.swift in Sources */,
+				159415DC1E68BD78003E4424 /* KONStateController.swift in Sources */,
 				150336D61E4FE42C007EE820 /* KONNetworkManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
