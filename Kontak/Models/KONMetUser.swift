@@ -27,6 +27,4 @@ class KONMetUser: KONUser {
     convenience init(userID: String) {
         self.init(firstName: nil, lastName: nil, userID: userID)
     }
-
-    
 }

@@ -20,14 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FIRApp.configure()
         let stateController = KONStateController.sharedInstance
+        let userManager = KONUserManager.sharedInstance
+        let locationManager = KONLocationManager.sharedInstance
+        let networkManager = KONNetworkManager.sharedInstance
+
+        stateController.registerManagers([userManager, locationManager, networkManager])
         stateController.start()
-//        _ = KONLocationManager.sharedInstance
-//        _ = KONUserManager.sharedInstance
-//        _ = KONNetworkManager.sharedInstance
-//        
-//        KONLocationManager.sharedInstance.start()
-//        KONUserManager.sharedInstance.start()
-//        KONNetworkManager.sharedInstance.start()
         
         if let window = self.window {
             if let tabBarController = window.rootViewController as? UITabBarController {

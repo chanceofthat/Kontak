@@ -19,13 +19,15 @@ class KONDiagnosticsViewController: UIViewController {
     @IBOutlet weak var locationManagerSwitch: UISwitch!
     @IBOutlet weak var overrideLocationSwitch: UISwitch!
     
-    lazy var userManager: KONUserManager = KONUserManager.sharedInstance
+    lazy var userManager: KONUserManager = KONStateController.sharedInstance.registeredManagerForTargetName(KONUserManager.className) as! KONUserManager
     lazy var locationManager: KONLocationManager = KONLocationManager.sharedInstance
     lazy var networkManager: KONNetworkManager = KONNetworkManager.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+//        userManager =
+        
         uuidTextField.text = userManager.meUser.userID
         updateLocationFields()
         locationManagerStatusLabel.text = "On"
@@ -114,12 +116,12 @@ class KONDiagnosticsViewController: UIViewController {
     }
     
     func updateLocationFields() {
-        if let locationHash = userManager.meUser.locationHash {
-            geoHashTextField.text = locationHash
-            let (lat, lon) = KONLocationManager.coordinatesFromLocationHash(hash: locationHash)
-            latTextField.text = String(lat)
-            lonTextField.text = String(lon)
-        }
+//        if let locationHash = userManager.meUser.locationHash {
+//            geoHashTextField.text = locationHash
+//            let (lat, lon) = KONLocationManager.coordinatesFromLocationHash(hash: locationHash)
+//            latTextField.text = String(lat)
+//            lonTextField.text = String(lon)
+//        }
     }
 
 }

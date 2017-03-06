@@ -9,16 +9,34 @@
 import UIKit
 //import CoreLocation
 
-class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEvaluationObserver {
+class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
     
-    struct MetUsers {
-        var users: [KONMetUser] = []
-        var userIDs: [String] {
+    class MetUsers: NSObject {
+        dynamic var flag = 0
+        dynamic var users: [KONMetUser] = []
+        dynamic var recentUserID: String? {
+            get {
+                return userIDs.last
+            }
+        }
+        dynamic var userIDs: [String] {
             get {
                 return users.flatMap({ (user: KONMetUser) -> String in
                     return user.userID
                 })
             }
+        }
+        
+        dynamic class func keyPathsForValuesAffectingRecentUserID() -> Set<String> {
+            return ["users"]
+        }
+        
+        dynamic class func keyPathsForValuesAffectingUserIDs() -> Set<String> {
+            return ["users"]
+        }
+        
+        dynamic class func keyPathsForValuesAffectingUsers() -> Set<String> {
+            return ["flag"]
         }
         
         var count: Int {
@@ -50,7 +68,7 @@ class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEv
     dynamic var meUser: KONMeUser!
     var nearbyUsers: [KONNearbyUser] = []
     
-    var metUsers: MetUsers = MetUsers() {
+    dynamic var metUsers: MetUsers = MetUsers() {
         didSet {
            metControllerUpdateCallback?()
         }
@@ -59,31 +77,25 @@ class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEv
     // Callbacks
     var metControllerUpdateCallback: (() -> Void)?
     
-    // MARK: - Init
+    // MARK: - KONStateControllable Protocol
     
-    private override init() {
-        super.init()
-    }
-    
-
     func start() {
         registerWithStateController()
-        
-//        createDummyNearbyUsers()
     }
-    
-    // MARK: - State Controller
     
     func registerWithStateController() {
         let stateController = KONStateController.sharedInstance
         
         let value = true
-        let meUserTargetKey = KONTargetKeyInfo(targetName: self.className, key: #keyPath(KONUserManager.meUser), evaluationValue: value)
-        let meUserAvailableRule = KONStateControllerRule(name: Constants.StateController.RuleNames.meUserAvailableRule, targetKeys: [meUserTargetKey])
+        let meUserQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONUserManager.meUser), evaluationValue: value)
+        let meUserAvailableRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.meUserAvailableRule, targetKeyQueries: [meUserQuery])
         
-        meUserAvailableRule.ruleFailureCallback = {[weak self] (reason) in
+        meUserAvailableRule.evaluationCallback = {[weak self] (rule, successful, context) in
             guard let `self` = self else { return }
-            self.populateMeUser()
+
+            if !successful {
+                self.populateMeUser()
+            }
         }
         
         stateController.registerRules(target: self, rules: [meUserAvailableRule])
@@ -96,12 +108,11 @@ class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEv
     }
     
     func addMetUsersWithUserIDs(userIDs: [String]) {
-        /*
+        
         for userID in userIDs {
             metUsers.users.append(KONMetUser(userID: userID))
-            networkManager.observeDatabaseForUserValueChangesFor(userID: userID)
         }
-         */
+        
     }
     
     func removeMetUsersWithUserIDs(userIDs: [String]) {
@@ -114,6 +125,7 @@ class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEv
     
     func updateMetUsersWithUserIDs(userIDs: [String : [String : Any]]) {
         for (userID, infoDict) in userIDs {
+            metUsers.flag += 1
             if let user = metUsers.userForID(userID: userID) {
                 user.setValuesForKeys(infoDict)
                 metControllerUpdateCallback?()
@@ -135,7 +147,7 @@ class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEv
     }
     
     
-    // MARK: - KONLocationManagerDelegate
+    /* MARK: - KONLocationManagerDelegate
     
     func didUpdateCurrentLocation(locationHash: String) {
       
@@ -144,12 +156,26 @@ class KONUserManager: NSObject, KONLocationManagerDelegate, KONStateControllerEv
         networkManager.updateLocationForUser(user: meUser)
          */
     }
+ */
     
-    // MARK: - KONStateControllerEvaluationObserver Protocol
-    func didEvaluateRule(ruleName: String, successful: Bool, context: [String : Any]?) {
-//        print("Rule: \(ruleName), was \(successful ? "" : "not ")successful")
-        
+    // MARK: - KONTransportObserver Protocol 
+    
+    func didReceiveData(_ data: Any) {
+        if let userID = data as? String {
+            self.addMetUsersWithUserIDs(userIDs: [userID])
+        }
     }
     
+    func didRemoveData(_ data: Any) {
+        if let userID = data as? String {
+            self.removeMetUsersWithUserIDs(userIDs: [userID])
+        }
+    }
     
+    func didChangeData(_ data: Any) {
+        if let updatedUserIDs = data as? [String : [String : Any]] {
+            updateMetUsersWithUserIDs(userIDs: updatedUserIDs)
+        }
+        
+    }
 }

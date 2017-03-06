@@ -33,35 +33,6 @@ class KONUser: NSObject {
         }
     }
     
-    /*
-    struct KONLocation {
-        private let location: CLLocation!
-        
-        init(location: CLLocation) {
-            self.location = location
-        }
-        
-        var longitude: Double {
-            get {
-                return location.coordinate.longitude
-            }
-        }
-        
-        var latitude: Double {
-            get {
-                return location.coordinate.latitude
-            }
-        }
-        
-        var timestamp: Date {
-            get {
-                return location.timestamp
-            }
-        }
-    }
-    */
-
-    
     // MARK: - Properties
     private var _userID: String!
     var userID: String {
@@ -97,7 +68,7 @@ class KONUser: NSObject {
     var name: Name?
     var profilePicture: UIImage?
 //    var location: KONLocation?
-    var locationHash: String?
+//    var locationHash: String?
 
     override func setValue(_ value: Any?, forKey key: String) {
         if let string = value as? String {

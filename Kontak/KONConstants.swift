@@ -90,7 +90,7 @@ let KONNearbyRange: Int = 9
 let KONRegionIdentifier = "KONRegionIdentifier"
 
 // MARK: - Meet Criteria
-let KONMeetDuration: TimeInterval = 0.5 //minutes
+let KONMeetDuration: TimeInterval = 0.05 //minutes
 
 struct Constants {
     struct StateController {
@@ -98,6 +98,12 @@ struct Constants {
             static let meUserAvailableRule = "MeUserAvailableRule"
             static let locationAvailableRule = "LocationAvailableRule"
             static let meUserAndLocationAvailableRule = "MeUserAndLocationAvailableRule"
+            static let updateLocationHashRule = "UpdateLocationHashRule"
+            static let networkUserDataAvailable = "NetworkUserDataAvailableRule"
+            static let updatedMetUsersAvailable = "UpdatedMetUsersAvailableRule"
+        }
+        struct RuleContextKeys {
+            static let failedKeys = "StateControllerRuleContextFailedKeysKey"
         }
     }
 }

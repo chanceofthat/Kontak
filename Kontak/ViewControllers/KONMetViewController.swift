@@ -8,26 +8,28 @@
 
 import UIKit
 
-class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, KONTransportObserver {
 
     // MARK: - Properties
     @IBOutlet var backgroundView: KONBackgroundView!
     @IBOutlet weak var backgroundCardView: KONBackgroundCardView!
     @IBOutlet weak var tableView: UITableView!
     
-    var userManager: KONUserManager!
-
+//    var userManager: KONUserManager!
+    var users = [KONMetUser]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Get User Manager Singleton
-        userManager = KONUserManager.sharedInstance
-        userManager.metControllerUpdateCallback = {[weak self] in
-            guard let `self` = self else { return }
-            
-            self.tableView.reloadData()
-        }
+//        userManager = KONUserManager.sharedInstance
+        
+//        userManager.metControllerUpdateCallback = {[weak self] in
+//            guard let `self` = self else { return }
+//            
+//            self.tableView.reloadData()
+//        }
+        registerWithStateController()
 
         // Set Up BackgroundView
         backgroundView.setBackgroundImage(image: #imageLiteral(resourceName: "MetBackgroundFill"))
@@ -48,11 +50,30 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.viewWillAppear(animated)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+    // MARK: - State Controller
     
+    func registerWithStateController() {
+        let stateController = KONStateController.sharedInstance
+        
+        let metUsersUpdatedQuery = KONTargetKeyQuery(targetName: KONUserManager.className, key: #keyPath(KONUserManager.metUsers.users), evaluationValue: true)
+        let metUsersUpdatedRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.updatedMetUsersAvailable, targetKeyQueries: [metUsersUpdatedQuery]) {[weak self] (rule, successful, context) in
+            guard let `self` = self else { return }
+            
+            if successful {
+                for key in rule.allKeys {
+                    if let users = context?[key] as? [KONMetUser] {
+                        self.users = users
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+        
+        }
+       
+        
+        stateController.registerRules(target: self, rules: [metUsersUpdatedRule])
+        stateController.registerTransportObserver(self, regardingTarget: KONUserManager.className)
+    }
 
     // MARK: - UITableViewDelegate Protocol
     
@@ -64,7 +85,8 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return userManager.metUsers.count
+//        return userManager.metUsers.count
+        return users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -72,9 +94,11 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let cell = tableView.dequeueReusableCell(withIdentifier: KONMetTableCellReuseIdentifier) as! KONMetTableViewCell
         
 //        cell.nameLabel.text = userManager.nearbyUsers[indexPath.row].name.fullName
-        let userIDs = userManager.metUsers.userIDs
-        cell.uuidLabel.text = userIDs[indexPath.row]
-        cell.nameLabel.text = userManager.metUsers.userForID(userID: userIDs[indexPath.row])?.name?.fullName
+//        let userIDs = userManager.metUsers.userIDs
+        let user = users[indexPath.row]
+        cell.uuidLabel.text = user.userID
+        cell.nameLabel.text = user.name?.fullName
+        
         
         
         return cell
@@ -82,7 +106,12 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     
     
+    // MARK: - KONTransportObserver
     
+    func observeTransportEvent(_ event: TransportEventType) {
+        print("Did Observe Transport Event \(event)")
+        tableView.reloadData()
+    }
     
     
     

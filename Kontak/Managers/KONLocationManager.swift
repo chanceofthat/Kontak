@@ -9,10 +9,6 @@
 import UIKit
 import CoreLocation
 
-protocol KONLocationManagerDelegate: class {
-    func didUpdateCurrentLocation(locationHash: String)
-}
-
 private extension Double {
     var radians: Double {
         get {
@@ -33,7 +29,7 @@ extension KONLocationManager {
     }
 }
 
-class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControllerEvaluationObserver {
+class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControllable {
     
     enum LocationManagerStatus {
         case notStarted, started, paused
@@ -42,7 +38,6 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlle
     // MARK: - Properties
     static let sharedInstance: KONLocationManager = KONLocationManager()
     
-    weak var delegate: KONLocationManagerDelegate?
     dynamic private var locationManager: CLLocationManager?
     private var latestLocation: CLLocation?
     dynamic var latestLocationHash: String?
@@ -59,11 +54,6 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlle
     
     var locationOverrideEnabled = false
     
-    // MARK: - Init
-    private override init() {
-        super.init()
-    }
-    
     func start() {
         registerWithStateController()
     }
@@ -77,27 +67,26 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlle
     func registerWithStateController() {
         let stateController = KONStateController.sharedInstance
         
-        let locationManagerStartedTargetKey = KONTargetKeyInfo(targetName: self.className, key: #keyPath(KONLocationManager.locationManager), evaluationValue: true)
-        let locationAvailableTargetKey = KONTargetKeyInfo(targetName: self.className, key: #keyPath(KONLocationManager.latestLocationHash), evaluationValue: true)
-        let locationAvailableRule = KONStateControllerRule(name: Constants.StateController.RuleNames.locationAvailableRule, targetKeys: [locationManagerStartedTargetKey, locationAvailableTargetKey])
-        locationAvailableRule.ruleFailureCallback = {[weak self] (failingKey) in
+        let locationManagerStartedQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONLocationManager.locationManager), evaluationValue: true)
+        let locationAvailableQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONLocationManager.latestLocationHash), evaluationValue: true)
+        let locationAvailableRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.locationAvailableRule, targetKeyQueries: [locationManagerStartedQuery, locationAvailableQuery], condition: .valuesCleared)
+        
+        locationAvailableRule.evaluationCallback = {[weak self] (rule, successful, context) in
             guard let `self` = self else { return }
-            if failingKey == #keyPath(KONLocationManager.locationManager) {
-                self.startLocationManager()
-            }
-            else {
-                self.updateLocation()
-            }
-        }
-        
-        let meUserAvailableTargetKey = KONTargetKeyInfo(targetName: KONUserManager.className, key: #keyPath(KONUserManager.meUser), evaluationValue: true)
-        let meUserAndLocationAvailableRule  = KONStateControllerRule(name: Constants.StateController.RuleNames.meUserAndLocationAvailableRule, targetKeys: [locationAvailableTargetKey, meUserAvailableTargetKey])
-        
-        meUserAndLocationAvailableRule.ruleSuccessCallback = {
             
+            if !successful {
+                if let failedKeys = context?[Constants.StateController.RuleContextKeys.failedKeys] as? [String] {
+                    if failedKeys.contains(#keyPath(KONLocationManager.locationManager)) {
+                        self.startLocationManager()
+                    }
+                    else if (failedKeys.contains(#keyPath(KONLocationManager.latestLocationHash))) {
+                        self.updateLocation()
+                    }
+                }
+            }
         }
         
-        stateController.registerRules(target: self, rules: [locationAvailableRule, meUserAndLocationAvailableRule])
+        stateController.registerRules(target: self, rules: [locationAvailableRule])
  
     }
     
@@ -207,7 +196,7 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlle
     // MARK: - Helpers
     
     func manuallySetLocationToHash(hash: String) {
-        self.delegate?.didUpdateCurrentLocation(locationHash: hash)
+//        self.delegate?.didUpdateCurrentLocation(locationHash: hash)
 //        updateLocation()
     }
     

@@ -8,11 +8,12 @@
 
 import UIKit
 
-class KONTargetKeyInfo: NSObject {
+class KONTargetKeyQuery: NSObject {
     var targetName: String!
     var key: String!
     var evaluationValue: Bool!
     
+    /* A evaluationValue of false is mutating and will set the target's value for key to nil */
     init(targetName: String, key: String, evaluationValue: Bool) {
         self.targetName = targetName
         self.key = key
@@ -23,69 +24,101 @@ class KONTargetKeyInfo: NSObject {
 
 class KONStateControllerRule: NSObject {
     
+    // MARK: - Enums
+    
+    enum EvaluationCondition {
+        case valuesUnchanged
+        case valuesChanged
+        case valuesSet
+        case valuesCleared
+    }
+    
     // MARK: - Properties
     
     var name: String!
-//    var ruleDescription: String {
-//        get {
-//            var description = ""
-//            if requiredTrueValueKeys.count > 0 {
-//                description += "True-"
-//                for key in requiredTrueValueKeys {
-//                    description += key
-//                }
-//                description += "-"
-//            }
-//            if requiredTrueValueKeys.count > 0 {
-//                description += "False-"
-//                for key in requiredFalseValueKeys {
-//                    description += key
-//                }
-//            }
-//            return description
-//        }
-//    }
-//    var requiredTrueValueKeys: [String] = []
-//    var requiredFalseValueKeys: [String] = []
-//    var allKeys: [String] {
-//        get {
-//            return requiredTrueValueKeys + requiredFalseValueKeys
-//        }
-//    }
+    var ownerClassName: String!
+    var targetKeyQueries: [KONTargetKeyQuery]!
+    var allKeys: [String] {
+        var keys = [String]()
+        for query in targetKeyQueries {
+            keys.append(query.key)
+        }
+        return keys
+    }
+    var associatedKeys: [String] {
+        var keys = [String]()
+        for query in targetKeyQueries {
+            if query.targetName == ownerClassName {
+                keys.append(query.key)
+            }
+        }
+        return keys
+    }
+    var unassociatedKeys: ([String : [String]]) {
+        var keysForTarget = [String : [String]]()
+        
+        for query in targetKeyQueries {
+            if query.targetName != ownerClassName {
+                if keysForTarget[query.targetName] != nil {
+                    keysForTarget[query.targetName]?.append(query.key)
+                }
+                else {
+                    keysForTarget[query.targetName] = [query.key]
+                }
+            }
+        }
+        return keysForTarget
+    }
+
+    private var _initalSuccess = false
+    private var _evaluationCondition: EvaluationCondition!
+    var evaluationCondition: EvaluationCondition {
+        get {
+            if !_initalSuccess {
+                return .valuesChanged
+            }
+            return _evaluationCondition
+        }
+        set  {
+            _evaluationCondition = newValue
+        }
+    }
     
-    var targetKeys: [KONTargetKeyInfo]!
-    
-    var ruleSuccessCallback: (() -> Void)?
-    var ruleFailureCallback: ((String) -> Void)?
+    var evaluationCallback: ((_ rule: KONStateControllerRule, _ result: Bool, _ context: [String : Any]?) -> Void)?
     
     // MARK: - Init
     
-    init (name: String, targetKeys: [KONTargetKeyInfo]) {
+   
+    
+    
+    convenience init (owner: NSObject, name: String, targetKeyQueries: [KONTargetKeyQuery]) {
+        self.init(owner: owner, name: name, targetKeyQueries: targetKeyQueries, evaluationCallback: nil)
+    }
+    
+    convenience init (owner: NSObject, name: String, targetKeyQueries: [KONTargetKeyQuery], condition: EvaluationCondition) {
+        self.init(owner: owner, name: name, targetKeyQueries: targetKeyQueries, condition: condition, evaluationCallback: nil)
+    }
+    
+    convenience init (owner: NSObject, name: String, targetKeyQueries: [KONTargetKeyQuery], evaluationCallback: ((_ rule: KONStateControllerRule, _ result: Bool, _ context: [String : Any]?) -> Void)?) {
+        self.init(owner: owner, name: name, targetKeyQueries: targetKeyQueries, condition: .valuesChanged, evaluationCallback: evaluationCallback)
+    }
+    
+    init (owner: NSObject, name: String, targetKeyQueries: [KONTargetKeyQuery], condition: EvaluationCondition, evaluationCallback: ((_ rule: KONStateControllerRule, _ result: Bool, _ context: [String : Any]?) -> Void)?) {
         super.init()
-        self.targetKeys = targetKeys
-        self.name = name
-        
+        self.targetKeyQueries = targetKeyQueries
+        self.name = [owner.className, name].joined(separator: ".")
+        self.ownerClassName = owner.className
+        self.evaluationCondition = condition
+        self.evaluationCallback = evaluationCallback
     }
     
-//    init(name: String, trueKeys: [String]?, falseKeys: [String]?) {
-//        super.init()
-//        
-//        if let trueKeys = trueKeys {
-//            requiredTrueValueKeys = trueKeys
-//        }
-//        if let falseKeys = falseKeys {
-//            requiredFalseValueKeys = falseKeys
-//        }
-//        self.name = name
-//    }
-//    
-    func succeed() {
-        ruleSuccessCallback?()
+    func didEvaluateWithResult(_ result: Bool, context: [String : Any]?) {
+        print("Rule named: \(self.name!) was\(result ? "" : " not") successful \(result ? "✅" : "❌")")
+        if let failedKeys = context?[Constants.StateController.RuleContextKeys.failedKeys] as? [String] {
+            print("Rule failed on key(s): \(failedKeys)")
+        }
+        self._initalSuccess = result
+        evaluationCallback?(self, result, context)
     }
-    
-    func fail(failingKey: String) {
-        ruleFailureCallback?(failingKey)
-    }
-    
 
 }
