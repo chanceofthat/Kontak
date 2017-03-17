@@ -84,6 +84,8 @@ class KONStateControllerRule: NSObject {
         }
     }
     
+    var showRuleDebug = false
+    
     var evaluationCallback: ((_ rule: KONStateControllerRule, _ result: Bool, _ context: [String : Any]?) -> Void)?
     
     // MARK: - Init
@@ -113,9 +115,11 @@ class KONStateControllerRule: NSObject {
     }
     
     func didEvaluateWithResult(_ result: Bool, context: [String : Any]?) {
-        print("Rule named: \(self.name!) was\(result ? "" : " not") successful \(result ? "✅" : "❌")")
-        if let failedKeys = context?[Constants.StateController.RuleContextKeys.failedKeys] as? [String] {
-            print("Rule failed on key(s): \(failedKeys)")
+        if showRuleDebug {
+            print("Rule named: \(self.name!) was\(result ? "" : " not") successful \(result ? "✅" : "❌")")
+            if let failedKeys = context?[Constants.StateController.RuleContextKeys.failedKeys] as? [String] {
+                print("Rule failed on key(s): \(failedKeys)")
+            }
         }
         self._initalSuccess = result
         evaluationCallback?(self, result, context)

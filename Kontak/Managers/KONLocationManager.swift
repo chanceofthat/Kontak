@@ -38,12 +38,14 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     // MARK: - Properties
     static let sharedInstance: KONLocationManager = KONLocationManager()
     
+    private let stateController = KONStateController.sharedInstance
+
     dynamic private var locationManager: CLLocationManager?
     private var latestLocation: CLLocation?
     dynamic var latestLocationHash: String?
     
     private var lowPowerMode = false
-    private var didRecentlyUpdateLocation = false
+//    private var didRecentlyUpdateLocation = false
     
     var status: LocationManagerStatus = .notStarted
     dynamic private var locationManagerStarted: Bool {
@@ -52,20 +54,21 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
         }
     }
     
-    var locationOverrideEnabled = false
+    var updateLocationContinuously = false
+    
+    var useManualLocation = false
     
     func start() {
         registerWithStateController()
     }
     
     func stop() {
-
+        unregisterWithStateController()
     }
     
     // MARK: - State Controller
     
     func registerWithStateController() {
-        let stateController = KONStateController.sharedInstance
         
         let locationManagerStartedQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONLocationManager.locationManager), evaluationValue: true)
         let locationAvailableQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONLocationManager.latestLocationHash), evaluationValue: true)
@@ -88,6 +91,10 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
         
         stateController.registerRules(target: self, rules: [locationAvailableRule])
  
+    }
+    
+    func unregisterWithStateController() {
+        stateController.unregisterRulesForTarget(self)
     }
     
     // MARK: Starting and Stopping Location Services
@@ -203,9 +210,15 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     func updateLocation() {
         if locationManager?.delegate == nil { return }
         if let locationManager = locationManager {
-            didRecentlyUpdateLocation = false
-            locationManager.startUpdatingLocation()
-            locationManager.requestLocation()
+
+            if useManualLocation {
+                let lastLocationHash = latestLocationHash
+                latestLocationHash = lastLocationHash
+            }
+            else {
+                locationManager.startUpdatingLocation()
+                locationManager.requestLocation()
+            }
         }
     }
     
@@ -217,15 +230,18 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
 
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if !didRecentlyUpdateLocation {
-            if let latestLocation = locations.last {
-                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
-                if locationOverrideEnabled == false {
-                }
+        if let latestLocation = locations.last {
+            let lastUpdatedTime = latestLocation.timestamp.timeIntervalSinceNow
+            
+//            print("Update Time: \(abs(lastUpdatedTime))")
+            if abs(lastUpdatedTime) < 1 {
+//                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
+                
                 self.latestLocation = latestLocation
                 self.latestLocationHash = latestLocation.coordinate.geohash(length: 10)
-                self.didRecentlyUpdateLocation = true
-                self.locationManager?.stopUpdatingLocation()
+                if updateLocationContinuously == false {
+                    self.locationManager?.stopUpdatingLocation()
+                }
             }
         }
     }
@@ -271,9 +287,19 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
         print("Region Monitoring Did Fail")
     }
     
-    // MARK: - KONStateControllerEvaluationObserver Protocol
-    func didEvaluateRule(ruleName: String, successful: Bool, context: [String : Any]?) {
-//        print("Rule: \(ruleName), was \(successful ? "" : "not ")successful")
+    /* MARK: - KONTransportResponder
+    
+    func didReceiveData(_ data: Any) {
         
     }
+    
+    func didChangeData(_ data: Any) {
+        
+    }
+    
+    func didRemoveData(_ data: Any) {
+        
+    }
+     */
+    
 }

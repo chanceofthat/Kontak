@@ -13,11 +13,11 @@ import UIKit
 
 extension NSObject {
     var className: String {
-        return NSStringFromClass(type(of: self))
+        return NSStringFromClass(type(of: self)).components(separatedBy: ".").last!
     }
     
     public class var className: String{
-        return NSStringFromClass(self)
+        return NSStringFromClass(self).components(separatedBy: ".").last!
     }
 }
 
@@ -46,15 +46,17 @@ extension UIColor {
     
     static let konGreen = UIColor.init(hex: 0x00B9A9)
     static let konYellow = UIColor.init(hex: 0xF8F4D2)
-    static let konBlue = UIColor.init(hex: 0x58B2E6)
+    static let konBlue = UIColor.init(hex: 0x269DEC)
     static let konRed = UIColor.init(hex: 0xEA5455)
     static let konBlack = UIColor.init(hex: 0x343434)
-    static let konGray = UIColor.init(hex: 0xF0F0F0)
+    static let konLightGray = UIColor.init(hex: 0x767676)
+    static let konDarkGray = UIColor.init(hex: 0x4A4A4A)
+    
 }
 
 func konGradientForRect(frame: CGRect) -> CAGradientLayer {
     let gradient = CAGradientLayer()
-    gradient.colors = [UIColor.white.cgColor, UIColor.konGray.cgColor]
+    gradient.colors = [UIColor.white.cgColor, UIColor.konLightGray.cgColor]
     gradient.startPoint = CGPoint(x: 0, y: 1)
     gradient.endPoint = CGPoint(x: 1, y: 0)
     gradient.frame = frame
@@ -85,12 +87,12 @@ let KONDefaultsUserIDKey = "KONUserIDKey"
 
 // MARK: - Location
 let KONRegionRadius: Double = 50
-let KONRegionRange: Int = 7
+let KONRegionRange: Int = 8
 let KONNearbyRange: Int = 9
 let KONRegionIdentifier = "KONRegionIdentifier"
 
 // MARK: - Meet Criteria
-let KONMeetDuration: TimeInterval = 0.05 //minutes
+let KONMeetDuration: TimeInterval = 3/60 //minutes
 
 struct Constants {
     struct StateController {
@@ -101,10 +103,24 @@ struct Constants {
             static let updateLocationHashRule = "UpdateLocationHashRule"
             static let networkUserDataAvailable = "NetworkUserDataAvailableRule"
             static let updatedMetUsersAvailable = "UpdatedMetUsersAvailableRule"
+            static let updatedMonitoredUsersAvailable = "UpdatedMonitoredUsersAvailableRule"
         }
         struct RuleContextKeys {
             static let failedKeys = "StateControllerRuleContextFailedKeysKey"
         }
+    }
+    
+    struct TableView {
+        struct Cells {
+            struct Identifiers {
+                static let KONDiagnosticCell = "KONDiagnosticTableCellReuseIdentifier"
+                static let onboardContactMethodCell = "KONOnboardContactMethodTableViewCellReuseIdentifier"
+            }
+        }
+    }
+    
+    struct DefaultValues {
+        static let initialRemainingCharacterCount = 140
     }
 }
 

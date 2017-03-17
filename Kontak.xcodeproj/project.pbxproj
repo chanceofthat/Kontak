@@ -20,7 +20,17 @@
 		15062FF41E5CB2A9009ED548 /* KONState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15062FF31E5CB2A9009ED548 /* KONState.swift */; };
 		15062FFB1E5CB60F009ED548 /* KONStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15062FFA1E5CB60F009ED548 /* KONStateMachine.swift */; };
 		15062FFD1E5CB851009ED548 /* KONStateTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15062FFC1E5CB851009ED548 /* KONStateTransition.swift */; };
+		151DCDB61E6F7C2C00CF67F9 /* KONDiagnosticTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151DCDB51E6F7C2C00CF67F9 /* KONDiagnosticTableViewCell.swift */; };
+		151DCDB81E6FD1ED00CF67F9 /* KONUserStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151DCDB71E6FD1ED00CF67F9 /* KONUserStateController.swift */; };
+		151E97811E7C643900A07E9C /* KONOnboardBioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151E97801E7C643900A07E9C /* KONOnboardBioViewController.swift */; };
+		151E97831E7C781600A07E9C /* KONOnboardContactMethodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151E97821E7C781600A07E9C /* KONOnboardContactMethodTableViewCell.swift */; };
+		151E97861E7C7C6400A07E9C /* KONOnboardContactMethodsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151E97851E7C7C6400A07E9C /* KONOnboardContactMethodsViewController.swift */; };
 		1580F9151E56295C00DB9C85 /* KONMetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1580F9141E56295C00DB9C85 /* KONMetTableViewCell.swift */; };
+		15874B311E7B2571005E22D0 /* Onboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15874B301E7B2571005E22D0 /* Onboard.storyboard */; };
+		15874B331E7B363C005E22D0 /* KONOnboardNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15874B321E7B363C005E22D0 /* KONOnboardNameViewController.swift */; };
+		15874B371E7B3754005E22D0 /* KONExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15874B361E7B3754005E22D0 /* KONExtensions.swift */; };
+		15874B391E7B3F39005E22D0 /* KONUserReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15874B381E7B3F39005E22D0 /* KONUserReference.swift */; };
+		15874B3B1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15874B3A1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift */; };
 		159415DC1E68BD78003E4424 /* KONStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159415DB1E68BD78003E4424 /* KONStateController.swift */; };
 		159415DF1E68C2C8003E4424 /* KONStateControllerRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */; };
 		15D9B7C71E4CF838009EBBAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */; };
@@ -67,7 +77,17 @@
 		15062FF31E5CB2A9009ED548 /* KONState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONState.swift; path = StateMachine/KONState.swift; sourceTree = "<group>"; };
 		15062FFA1E5CB60F009ED548 /* KONStateMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateMachine.swift; path = StateMachine/KONStateMachine.swift; sourceTree = "<group>"; };
 		15062FFC1E5CB851009ED548 /* KONStateTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateTransition.swift; path = StateMachine/KONStateTransition.swift; sourceTree = "<group>"; };
+		151DCDB51E6F7C2C00CF67F9 /* KONDiagnosticTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONDiagnosticTableViewCell.swift; path = Cells/KONDiagnosticTableViewCell.swift; sourceTree = "<group>"; };
+		151DCDB71E6FD1ED00CF67F9 /* KONUserStateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONUserStateController.swift; path = State/KONUserStateController.swift; sourceTree = "<group>"; };
+		151E97801E7C643900A07E9C /* KONOnboardBioViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONOnboardBioViewController.swift; path = ViewControllers/KONOnboardBioViewController.swift; sourceTree = "<group>"; };
+		151E97821E7C781600A07E9C /* KONOnboardContactMethodTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONOnboardContactMethodTableViewCell.swift; path = Cells/KONOnboardContactMethodTableViewCell.swift; sourceTree = "<group>"; };
+		151E97851E7C7C6400A07E9C /* KONOnboardContactMethodsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONOnboardContactMethodsViewController.swift; path = ViewControllers/KONOnboardContactMethodsViewController.swift; sourceTree = "<group>"; };
 		1580F9141E56295C00DB9C85 /* KONMetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONMetTableViewCell.swift; path = Cells/KONMetTableViewCell.swift; sourceTree = "<group>"; };
+		15874B301E7B2571005E22D0 /* Onboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboard.storyboard; sourceTree = "<group>"; };
+		15874B321E7B363C005E22D0 /* KONOnboardNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONOnboardNameViewController.swift; path = ViewControllers/KONOnboardNameViewController.swift; sourceTree = "<group>"; };
+		15874B361E7B3754005E22D0 /* KONExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KONExtensions.swift; sourceTree = "<group>"; };
+		15874B381E7B3F39005E22D0 /* KONUserReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONUserReference.swift; path = Models/KONUserReference.swift; sourceTree = "<group>"; };
+		15874B3A1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONOnboardProfilePictureViewController.swift; path = ViewControllers/KONOnboardProfilePictureViewController.swift; sourceTree = "<group>"; };
 		159415DB1E68BD78003E4424 /* KONStateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateController.swift; path = State/KONStateController.swift; sourceTree = "<group>"; };
 		159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateControllerRule.swift; path = State/KONStateControllerRule.swift; sourceTree = "<group>"; };
 		15D9B7C31E4CF838009EBBAF /* Kontak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kontak.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				150336C31E4FCCD3007EE820 /* KONUser.swift */,
+				15874B381E7B3F39005E22D0 /* KONUserReference.swift */,
 				150336C51E4FCCF4007EE820 /* KONMeUser.swift */,
 				150336C71E4FCD06007EE820 /* KONNearbyUser.swift */,
 				150336C91E4FCD12007EE820 /* KONMetUser.swift */,
@@ -148,20 +169,51 @@
 			name = StateMachine;
 			sourceTree = "<group>";
 		};
+		151E97841E7C781C00A07E9C /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				151E97821E7C781600A07E9C /* KONOnboardContactMethodTableViewCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		1580F9161E56296B00DB9C85 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				150336C11E4FC20D007EE820 /* KONNearbyTableViewCell.swift */,
 				1580F9141E56295C00DB9C85 /* KONMetTableViewCell.swift */,
+				151DCDB51E6F7C2C00CF67F9 /* KONDiagnosticTableViewCell.swift */,
 			);
 			name = Cells;
+			sourceTree = "<group>";
+		};
+		15874B341E7B3641005E22D0 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				15874B321E7B363C005E22D0 /* KONOnboardNameViewController.swift */,
+				15874B3A1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift */,
+				151E97801E7C643900A07E9C /* KONOnboardBioViewController.swift */,
+				151E97851E7C7C6400A07E9C /* KONOnboardContactMethodsViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		15874B351E7B3650005E22D0 /* Onboard */ = {
+			isa = PBXGroup;
+			children = (
+				15874B301E7B2571005E22D0 /* Onboard.storyboard */,
+				15874B341E7B3641005E22D0 /* ViewControllers */,
+				151E97841E7C781C00A07E9C /* Cells */,
+			);
+			name = Onboard;
 			sourceTree = "<group>";
 		};
 		159415DD1E68BD8B003E4424 /* State */ = {
 			isa = PBXGroup;
 			children = (
-				159415DB1E68BD78003E4424 /* KONStateController.swift */,
 				159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */,
+				159415DB1E68BD78003E4424 /* KONStateController.swift */,
+				151DCDB71E6FD1ED00CF67F9 /* KONUserStateController.swift */,
 			);
 			name = State;
 			sourceTree = "<group>";
@@ -192,6 +244,8 @@
 				15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */,
 				15E404A61E58000400938651 /* Geohash.swift */,
 				15DD1E471E4D05FF00D74F4C /* KONConstants.swift */,
+				15874B361E7B3754005E22D0 /* KONExtensions.swift */,
+				15874B351E7B3650005E22D0 /* Onboard */,
 				15D9B7CA1E4CF838009EBBAF /* Main.storyboard */,
 				159415DD1E68BD8B003E4424 /* State */,
 				150336D21E4FCDD8007EE820 /* Models */,
@@ -358,6 +412,7 @@
 				15D9B7D11E4CF838009EBBAF /* LaunchScreen.storyboard in Resources */,
 				150336D41E4FE033007EE820 /* GoogleService-Info.plist in Resources */,
 				15D9B7CE1E4CF838009EBBAF /* Assets.xcassets in Resources */,
+				15874B311E7B2571005E22D0 /* Onboard.storyboard in Resources */,
 				15D9B7CC1E4CF838009EBBAF /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -469,14 +524,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15874B3B1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift in Sources */,
 				15E404A91E58E25000938651 /* KONDiagnosticsViewController.swift in Sources */,
 				15DD1E4D1E4D23AD00D74F4C /* KONNavigationBar.swift in Sources */,
 				15062FF41E5CB2A9009ED548 /* KONState.swift in Sources */,
+				151DCDB61E6F7C2C00CF67F9 /* KONDiagnosticTableViewCell.swift in Sources */,
 				15D9B7C71E4CF838009EBBAF /* AppDelegate.swift in Sources */,
 				15DD1E441E4D008400D74F4C /* KONMeViewController.swift in Sources */,
+				15874B371E7B3754005E22D0 /* KONExtensions.swift in Sources */,
 				15DD1E4F1E4D2A6900D74F4C /* KONBackgroundCardView.swift in Sources */,
+				151E97811E7C643900A07E9C /* KONOnboardBioViewController.swift in Sources */,
+				15874B391E7B3F39005E22D0 /* KONUserReference.swift in Sources */,
 				15DD1E481E4D05FF00D74F4C /* KONConstants.swift in Sources */,
+				15874B331E7B363C005E22D0 /* KONOnboardNameViewController.swift in Sources */,
 				15062FFD1E5CB851009ED548 /* KONStateTransition.swift in Sources */,
+				151E97831E7C781600A07E9C /* KONOnboardContactMethodTableViewCell.swift in Sources */,
 				150336C21E4FC20D007EE820 /* KONNearbyTableViewCell.swift in Sources */,
 				15DD1E4A1E4D0AD300D74F4C /* KONBackgroundView.swift in Sources */,
 				15E404A71E58000400938651 /* Geohash.swift in Sources */,
@@ -489,12 +551,14 @@
 				150336CA1E4FCD12007EE820 /* KONMetUser.swift in Sources */,
 				150336C81E4FCD06007EE820 /* KONNearbyUser.swift in Sources */,
 				15DD1E3B1E4CFFBA00D74F4C /* KONNearbyViewController.swift in Sources */,
+				151E97861E7C7C6400A07E9C /* KONOnboardContactMethodsViewController.swift in Sources */,
 				150336C41E4FCCD3007EE820 /* KONUser.swift in Sources */,
 				1580F9151E56295C00DB9C85 /* KONMetTableViewCell.swift in Sources */,
 				159415DF1E68C2C8003E4424 /* KONStateControllerRule.swift in Sources */,
 				150336CE1E4FCD3B007EE820 /* KONLocationManager.swift in Sources */,
 				159415DC1E68BD78003E4424 /* KONStateController.swift in Sources */,
 				150336D61E4FE42C007EE820 /* KONNetworkManager.swift in Sources */,
+				151DCDB81E6FD1ED00CF67F9 /* KONUserStateController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

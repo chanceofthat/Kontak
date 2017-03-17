@@ -10,7 +10,7 @@ import UIKit
 
 protocol KONStateControllable {
     func start()
-    func registerWithStateController()
+    func stop()
 }
 
 // MARK: - Transport
@@ -34,17 +34,23 @@ protocol KONTransportObserver: AnyObject {
 // MARK: - KONWeakObject
 
 class KONWeakObject: Hashable, Equatable {
-    weak var value : NSObject!
+    weak var value : NSObject?
     init (value: NSObject) {
         self.value = value
     }
     var hashValue: Int {
-        return value.className.hash
+        if let value = value {
+            return value.className.hashValue
+        }
+        return 0
     }
 }
 
 func ==(lhs: KONWeakObject, rhs: KONWeakObject) -> Bool {
-    return lhs.value == rhs.value
+    if let lhs = lhs.value, let rhs = rhs.value {
+        return lhs == rhs
+    }
+    return false
 }
 
 // MARK: - Target Observer
@@ -52,15 +58,35 @@ func ==(lhs: KONWeakObject, rhs: KONWeakObject) -> Bool {
 class KONTargetObserver: NSObject {
     weak var owner: KONStateController?
     
-    private var targets = Set<KONWeakObject>()
-    private var keyPathsForTarget: [Int : [String]] = [:]
+    /*private*/ var targets = Set<KONWeakObject>()
+    /*private*/ var keyPathsForTarget: [Int : Set<String>] = [:]
     private var observerContext = 0
     
     func addTarget(target: KONWeakObject, keyPaths: [String]) {
         
         targets.insert(target)
-        keyPathsForTarget[ObjectIdentifier(target).hashValue] = keyPaths
-        registerForObservationOfKeyPaths(target: target.value!, keyPaths: keyPaths)
+        var newKeys: Set<String> = Set(keyPaths)
+        if let oldKeys = keyPathsForTarget[ObjectIdentifier(target).hashValue] {
+            newKeys = Set(keyPaths).subtracting(oldKeys)
+            keyPathsForTarget[ObjectIdentifier(target).hashValue]?.formUnion(keyPaths)
+        }
+        else {
+            keyPathsForTarget[ObjectIdentifier(target).hashValue] = Set(keyPaths)
+        }
+//        keyPathsForTarget[ObjectIdentifier(target).hashValue] = keyPaths
+        if newKeys.count > 0 {
+            registerForObservationOfKeyPaths(target: target.value!, keyPaths: Array(newKeys))
+        }
+        
+    }
+    
+    func removeTarget(_ target: KONWeakObject) {
+        if let keyPaths = keyPathsForTarget[ObjectIdentifier(target).hashValue] {
+            for keyPath in keyPaths {
+                target.value?.removeObserver(self, forKeyPath: keyPath, context: &observerContext)
+            }
+        }
+        keyPathsForTarget.removeValue(forKey: ObjectIdentifier(target).hashValue)
     }
     
     func registerForObservationOfKeyPaths(target: NSObject, keyPaths: [String]) {
@@ -68,6 +94,7 @@ class KONTargetObserver: NSObject {
             target.addObserver(self, forKeyPath: keyPath, options: [.new, .old], context: &observerContext)
         }
     }
+
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard context == &observerContext else {
@@ -120,7 +147,7 @@ class KONStateController: NSObject {
     private var evaluationForRuleName = [String : Bool]()
     private var unassociatedKeysForTargetName = [String : [String]]()
     private var rulesForKey = [String : Set<KONStateControllerRule>]()
-    
+    private var rulesForTargetName = [String : Set<KONStateControllerRule>]()
     
     // MARK: - Init
     
@@ -137,6 +164,12 @@ class KONStateController: NSObject {
     func start() {
         for manager in registeredManagers {
             manager.start()
+        }
+    }
+    
+    func stop() {
+        for manager in registeredManagers {
+            manager.stop()
         }
     }
     
@@ -200,7 +233,7 @@ class KONStateController: NSObject {
     
     // MARK: - Rules
     
-    // Register Rules 
+    // Register Target Rules
     func registerRules(target: NSObject, rules: [KONStateControllerRule]) {
         
         // Save Target
@@ -234,6 +267,13 @@ class KONStateController: NSObject {
             }
         }
         
+        if rulesForTargetName[target.className] != nil {
+            rulesForTargetName[target.className]?.formUnion(rules)
+        }
+        else {
+            rulesForTargetName[target.className] = Set(rules)
+        }
+        
         // Observe keys of caller
         let unassociatedKeys = unassociatedKeysForTargetName[target.className] ?? []
         targetObserver?.addTarget(target: weakTarget, keyPaths: associatedKeys + unassociatedKeys)
@@ -250,6 +290,7 @@ class KONStateController: NSObject {
         registerRules(rules)
     }
     
+    /* Performs rule once and does not register for KVO */
     func registerRules(_ rules: [KONStateControllerRule]) {
         for rule in rules {
             ruleForName[rule.name] = rule
@@ -257,7 +298,29 @@ class KONStateController: NSObject {
         }
     }
     
-    func unreigsterRule(rule: KONStateControllerRule) {
+    // Unregister Target Rules
+    
+    func unregisterRulesForTarget(_ target: NSObject) {
+        if let weakTarget =  registeredTargetForTargetName[target.className] {
+            targetObserver?.removeTarget(weakTarget)
+            
+            if let rulesToRemove = rulesForTargetName[target.className] {
+                for rule in rulesToRemove {
+                    unregisterRule(rule)
+                    for (key, ruleSet) in rulesForKey {
+                        rulesForKey[key] = ruleSet.subtracting(Set([rule]))
+                    }
+                }
+            }
+            registeredTargetForTargetName.removeValue(forKey: target.className)
+        }
+        
+        
+        
+    }
+    
+    
+    func unregisterRule(_ rule: KONStateControllerRule) {
         ruleForName.removeValue(forKey: rule.name)
     }
     
@@ -292,6 +355,8 @@ class KONStateController: NSObject {
         
         var failedKeys = [String]()
         var context = [String : Any]()
+        
+     
 
         for query in rule.targetKeyQueries {
             

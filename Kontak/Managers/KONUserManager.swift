@@ -64,7 +64,9 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
 
     // MARK: - Properties
     static let sharedInstance: KONUserManager = KONUserManager()
-        
+    
+    private let stateController = KONStateController.sharedInstance
+
     dynamic var meUser: KONMeUser!
     var nearbyUsers: [KONNearbyUser] = []
     
@@ -83,8 +85,11 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
         registerWithStateController()
     }
     
+    func stop() {
+        unregisterWithStateController()
+    }
+    
     func registerWithStateController() {
-        let stateController = KONStateController.sharedInstance
         
         let value = true
         let meUserQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONUserManager.meUser), evaluationValue: value)
@@ -99,6 +104,10 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
         }
         
         stateController.registerRules(target: self, rules: [meUserAvailableRule])
+    }
+    
+    func unregisterWithStateController() {
+        stateController.unregisterRulesForTarget(self)
     }
     
     // MARK: - 
@@ -132,12 +141,7 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
             }
         }
     }
-    
-    func updateMeUserWithNewLocation() {
-        /*
-        locationManager.requestLocation()
-         */
-    }
+
     
     // MARK: - Fake Data
     func createDummyNearbyUsers() {
