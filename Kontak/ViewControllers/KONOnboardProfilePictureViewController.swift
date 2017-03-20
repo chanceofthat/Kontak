@@ -98,6 +98,13 @@ class KONOnboardProfilePictureViewController: UIViewController, AVCapturePhotoCa
         }
     }
     
+    @IBAction func didPressNextButton(_ sender: Any) {
+        if let profilePicture = profilePicture, let userRef = userRef {
+            userRef.profilePicture = profilePicture
+        }
+    }
+    
+    
     // MARK: - AVCapturePhotoCaptureDelegate
     
     func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
@@ -123,11 +130,12 @@ class KONOnboardProfilePictureViewController: UIViewController, AVCapturePhotoCa
 
     
     // MARK: - Navigation
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-
+        if let destination = segue.destination as? KONOnboardBioViewController {
+            destination.userRef = userRef
+        }
     }
-    
 
 }

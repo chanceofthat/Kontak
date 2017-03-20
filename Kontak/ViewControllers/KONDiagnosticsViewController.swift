@@ -38,7 +38,7 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
         tableView.delegate = self
         tableView.dataSource = self
         
-        uuidTextField.text = userManager.meUser.userID
+        uuidTextField.text = userManager.currentUser?.userID
         locationManagerStatusLabel.text = "On"
         overrideLocationSwitch.isOn = false
 
@@ -88,7 +88,7 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
     
     
     @IBAction func pushLocationButtonPressed(_ sender: Any) {
-        if let button = sender as? UIButton {
+//        if let button = sender as? UIButton {
             if (geoHashTextField.text != "") {
                 locationManager.useManualLocation = true
                 locationManager.latestLocationHash = geoHashTextField.text
@@ -97,16 +97,18 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
             else {
                 flashBackgroundWithColor(.yellow)
             }
-        }
+//        }
     }
  
     @IBAction func startButtonPressed(_ sender: Any) {
         if let uuid = uuidTextField.text, uuid.characters.count > 0 {
             stateController.stop()
-            networkManager.removeUserFromDatabase(userID: userManager.meUser.userID)
-            userManager.meUser.userID = uuid
-            stateController.start()
-            flashBackgroundWithColor(.green)
+            if let currentUser = userManager.currentUser, let userID = currentUser.userID {
+                networkManager.removeUserFromDatabase(userRef: currentUser)
+                currentUser.userID = uuid
+                stateController.start()
+                flashBackgroundWithColor(.green)
+            }
         }
         else {
             flashBackgroundWithColor(.yellow)
@@ -115,8 +117,10 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBAction func stopButtonPressed(_ sender: Any) {
         stateController.stop()
-        networkManager.removeUserFromDatabase(userID: userManager.meUser.userID)
-        tableView.reloadData()
+        if let currentUser = userManager.currentUser {
+            networkManager.removeUserFromDatabase(userRef: currentUser)
+            tableView.reloadData()
+        }
         flashBackgroundWithColor(.red)
     }
     
@@ -172,13 +176,13 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
         
         switch section {
         case 0:
-            return networkManager.userStateController.regionUserIDs.count
+            return networkManager.userStateController.regionUsers.count
         case 1:
-            return networkManager.userStateController.nearbyUserIDs.count
+            return networkManager.userStateController.nearbyUsers.count
         case 2:
-            return networkManager.userStateController.missingUserIDs.count
+            return networkManager.userStateController.missingUsers.count
         case 3:
-            return networkManager.userStateController.metUserIDs.count
+            return networkManager.userStateController.metUsers.count
         default:
             return 0
         }
@@ -205,13 +209,13 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
         
         switch indexPath.section {
         case 0:
-            cell.userID.text = networkManager.userStateController.regionUserIDs[indexPath.row]
+            cell.userID.text = networkManager.userStateController.regionUsers[indexPath.row].description
         case 1:
-            cell.userID.text = networkManager.userStateController.nearbyUserIDs[indexPath.row]
+            cell.userID.text = networkManager.userStateController.nearbyUsers[indexPath.row].description
         case 2:
-            cell.userID.text = networkManager.userStateController.missingUserIDs[indexPath.row]
+            cell.userID.text = networkManager.userStateController.missingUsers[indexPath.row].description
         case 3:
-            cell.userID.text = networkManager.userStateController.metUserIDs[indexPath.row]
+            cell.userID.text = networkManager.userStateController.metUsers[indexPath.row].description
         default:
             break
         }

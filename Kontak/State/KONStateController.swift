@@ -172,7 +172,7 @@ class KONStateController: NSObject {
             manager.stop()
         }
     }
-    
+        
     /* For Diagnostic Purposes Only */
     /* Managers should only be interacted with via queries, rules, and transport observation */
     func registeredManagerForTargetName(_ targetName: String) -> KONStateControllable? {

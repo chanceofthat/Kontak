@@ -8,7 +8,7 @@
 
 import UIKit
 
-class KONOnboardNameViewController: UIViewController, UITextFieldDelegate {
+class KONOnboardNameViewController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
     // MARK: - Properties
     
@@ -16,6 +16,9 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var lastNameTextField: UITextField!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var helperTextLabel: UILabel!
+    
+    @IBOutlet weak var nextButtonHeightConstraint: NSLayoutConstraint!
+    
     
     var userRef: KONUserReference?
     
@@ -30,7 +33,7 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate {
 
 
         // Set Up Text Fields
-        firstNameTextField.setBottomBorderToColor(.konBlue)
+        firstNameTextField.setBottomBorderToColor(.konLightGray)
         firstNameTextField.delegate = self
         
         lastNameTextField.setBottomBorderToColor(.konLightGray)
@@ -40,18 +43,49 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate {
         nextButton.isUserInteractionEnabled = false
         nextButton.alpha = 0.5
         helperTextLabel.alpha = 0
-
+        
+        // Set Up Gesture
+        let tapRecognizer = UITapGestureRecognizer(target: self, action:#selector(dismissKeyboard))
+        tapRecognizer.cancelsTouchesInView = false
+        tapRecognizer.delegate = self
+        view.addGestureRecognizer(tapRecognizer)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        animateNextButton(keyboardShowing: false)
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    // MARK: - Animations
+    
+    func animateNextButton(keyboardShowing: Bool) {
         
-        firstNameTextField.becomeFirstResponder()
+        
+        if keyboardShowing {
+            self.nextButtonHeightConstraint.constant = 270
+        }
+        else {
+            self.nextButtonHeightConstraint.constant = 32
+        }
+        
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {[weak self] in
+            guard let `self` = self else { return }
+            self.view.layoutIfNeeded()
+
+        }, completion: nil)
+        
+       
     }
     
     // MARK: - Actions
     
     @IBAction func textFieldEditingChanged(_ textField: UITextField) {
+        
         if textField == firstNameTextField {
             if let text = textField.text {
                 
@@ -78,6 +112,28 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    // MARK: - Diagnostic 
+    
+    @IBAction func didPressSkipButton(_ sender: Any) {
+        userRef = KONUserReference(firstName: "Chance", lastName: "Daniel")
+        userRef?.bio = "I am awesome"
+        userRef?.profilePicture = UIImage()
+        userRef?.contactMethodDictionary = [Constants.TableView.Cells.ContactMethod.methodTitles[0][0] : "7076941519"]
+        
+        let storyboard = UIStoryboard.init(name: "Mainn", bundle: nil)
+        let usersViewController = storyboard.instantiateViewController(withIdentifier: Constants.Storyboard.Identifiers.usersViewController) as! KONUsersViewController
+        
+        usersViewController.navigationItem.hidesBackButton = true
+        usersViewController.userRef = userRef
+        self.navigationController?.pushViewController(usersViewController, animated: true)
+    }
+    
+    
+    // MARK: - Gesture Recognizer Delegate
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return !(touch.view == nextButton)
+    }
     
     // MARK: - UITextFieldDelegate Protocol
     
@@ -92,15 +148,13 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.setBottomBorderToColor(.konBlue)
         
-        if textField == firstNameTextField {
-            lastNameTextField.setBottomBorderToColor(.konLightGray)
-        }
-        else if textField == lastNameTextField {
-            firstNameTextField.setBottomBorderToColor(.konLightGray)
-        }
-
+        animateNextButton(keyboardShowing: true)
     }
-
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.setBottomBorderToColor(.konLightGray)
+        animateNextButton(keyboardShowing: false)
+    }
 
     
     // MARK: - Navigation

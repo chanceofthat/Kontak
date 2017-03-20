@@ -21,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.statusBarStyle = .lightContent
         
         FIRApp.configure()
+        
+        
         let stateController = KONStateController.sharedInstance
         let userManager = KONUserManager.sharedInstance
         let locationManager = KONLocationManager.sharedInstance
@@ -29,13 +31,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         stateController.registerManagers([userManager, locationManager, networkManager])
         stateController.start()
         
+        /*
         if let window = self.window {
             if let tabBarController = window.rootViewController as? UITabBarController {
                 tabBarController.selectedIndex = 1;
             }
             
         }
-        
+        */
         
         /*
         class TestClass: NSObject {

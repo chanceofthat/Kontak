@@ -44,8 +44,8 @@ extension UIColor {
         self.init(red:(hex >> 16) & 0xff, green:(hex >> 8) & 0xff, blue:hex & 0xff)
     }
     
-    static let konGreen = UIColor.init(hex: 0x00B9A9)
-    static let konYellow = UIColor.init(hex: 0xF8F4D2)
+    static let konGreen = UIColor.init(hex: 0x00C681)
+    static let konYellow = UIColor.init(hex: 0xFFD00C)
     static let konBlue = UIColor.init(hex: 0x269DEC)
     static let konRed = UIColor.init(hex: 0xEA5455)
     static let konBlack = UIColor.init(hex: 0x343434)
@@ -97,9 +97,9 @@ let KONMeetDuration: TimeInterval = 3/60 //minutes
 struct Constants {
     struct StateController {
         struct RuleNames {
-            static let meUserAvailableRule = "MeUserAvailableRule"
+            static let currentUserAvailableRule = "currentUserAvailableRule"
             static let locationAvailableRule = "LocationAvailableRule"
-            static let meUserAndLocationAvailableRule = "MeUserAndLocationAvailableRule"
+            static let currentUserAndLocationAvailableRule = "currentUserAndLocationAvailableRule"
             static let updateLocationHashRule = "UpdateLocationHashRule"
             static let networkUserDataAvailable = "NetworkUserDataAvailableRule"
             static let updatedMetUsersAvailable = "UpdatedMetUsersAvailableRule"
@@ -115,7 +115,26 @@ struct Constants {
             struct Identifiers {
                 static let KONDiagnosticCell = "KONDiagnosticTableCellReuseIdentifier"
                 static let onboardContactMethodCell = "KONOnboardContactMethodTableViewCellReuseIdentifier"
+                static let userTableViewCell = "KONUserTableViewCellReuseIdentifier"
             }
+            
+            struct ContactMethod {
+                static let headerTitles = ["TRADITIONAL", "SOCIAL MEDIA"]
+                static let methodTitles = [["Phone Number", "Email Address"], ["Snapchat", "Instagram"]]
+                
+                static let keyboardTypes = [UIKeyboardType.numberPad, UIKeyboardType.emailAddress]
+            }
+            
+            struct Users {
+                static let headerTitles = ["NEARBY", "MET"]
+                
+            }
+        }
+    }
+    
+    struct Storyboard {
+        struct Identifiers {
+            static let usersViewController = "KONUsersViewControllerStoryboardIdentifer"
         }
     }
     

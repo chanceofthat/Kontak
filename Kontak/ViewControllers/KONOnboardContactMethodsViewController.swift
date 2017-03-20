@@ -8,16 +8,76 @@
 
 import UIKit
 
-class KONOnboardContactMethodsViewController: UIViewController {
+class KONOnboardContactMethodsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Properties
     
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var nextButton: UIButton!
     
+    
+    var userRef: KONUserReference?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // Set Up TableView
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+    
+    @IBAction func didPressNextButton(_ sender: Any) {
+        
+        if let userRef = userRef {
+            let storyboard = UIStoryboard.init(name: "Mainn", bundle: nil)
+            let usersViewController = storyboard.instantiateViewController(withIdentifier: Constants.Storyboard.Identifiers.usersViewController) as! KONUsersViewController
+            
+            usersViewController.navigationItem.hidesBackButton = true
+            usersViewController.userRef = userRef
+            self.navigationController?.pushViewController(usersViewController, animated: true)
+        }
+    }
+    
+    
+    // MARK: - UITableViewDelegate Protocol
+    
+    
+    // MARK: - UITablViewDataSource Protocol
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return Constants.TableView.Cells.ContactMethod.headerTitles.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return Constants.TableView.Cells.ContactMethod.methodTitles[section].count
+        
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return Constants.TableView.Cells.ContactMethod.headerTitles[section]
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableView.Cells.Identifiers.onboardContactMethodCell) as! KONOnboardContactMethodTableViewCell
+        
+        cell.userRef = userRef
+        cell.methodLabel.text = Constants.TableView.Cells.ContactMethod.methodTitles[indexPath.section][indexPath.row]
+        
+        if indexPath.section == 0 {
+            cell.methodTextField.keyboardType = Constants.TableView.Cells.ContactMethod.keyboardTypes[indexPath.row]
+            
+            if indexPath.row == 0 {
+                cell.methodTextField.becomeFirstResponder()
+            }
+        }
+        else {
+            cell.methodTextField.keyboardType = .asciiCapable
+        }
+        
+        cell.methodTextField.text = cell.previousMethodText()
+        
+        return cell
     }
     
 

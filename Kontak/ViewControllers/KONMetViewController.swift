@@ -16,7 +16,7 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var tableView: UITableView!
     
 //    var userManager: KONUserManager!
-    var users = [KONMetUser]()
+    var users = [KONUserReference]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +61,7 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             if successful {
                 for key in rule.allKeys {
-                    if let users = context?[key] as? [KONMetUser] {
+                    if let users = context?[key] as? [KONUserReference] {
                         self.users = users
                         self.tableView.reloadData()
                     }
@@ -97,7 +97,7 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //        let userIDs = userManager.metUsers.userIDs
         let user = users[indexPath.row]
         cell.uuidLabel.text = user.userID
-        cell.nameLabel.text = user.name?.fullName
+        cell.nameLabel.text = user.fullName
         
         
         

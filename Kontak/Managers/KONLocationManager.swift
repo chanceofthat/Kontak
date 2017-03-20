@@ -56,7 +56,14 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     
     var updateLocationContinuously = false
     
+    // Diagnostic
     var useManualLocation = false
+    var overrideLocationHash: String? {
+        didSet {
+            self.updateLocation()
+        }
+    }
+    
     
     func start() {
         registerWithStateController()
@@ -238,7 +245,12 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
 //                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
                 
                 self.latestLocation = latestLocation
-                self.latestLocationHash = latestLocation.coordinate.geohash(length: 10)
+                if let overrideLocationHash = overrideLocationHash {
+                    self.latestLocationHash = overrideLocationHash
+                }
+                else {
+                    self.latestLocationHash = latestLocation.coordinate.geohash(length: 10)
+                }
                 if updateLocationContinuously == false {
                     self.locationManager?.stopUpdatingLocation()
                 }

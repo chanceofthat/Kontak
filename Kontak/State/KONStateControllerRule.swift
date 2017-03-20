@@ -84,7 +84,7 @@ class KONStateControllerRule: NSObject {
         }
     }
     
-    var showRuleDebug = false
+    var showRuleDebug = true
     
     var evaluationCallback: ((_ rule: KONStateControllerRule, _ result: Bool, _ context: [String : Any]?) -> Void)?
     

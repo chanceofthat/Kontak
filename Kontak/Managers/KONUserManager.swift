@@ -7,13 +7,16 @@
 //
 
 import UIKit
-//import CoreLocation
+
+
+
+// MARK: -
 
 class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
     
     class MetUsers: NSObject {
         dynamic var flag = 0
-        dynamic var users: [KONMetUser] = []
+        dynamic var users: [KONUserReference] = []
         dynamic var recentUserID: String? {
             get {
                 return userIDs.last
@@ -21,8 +24,11 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
         }
         dynamic var userIDs: [String] {
             get {
-                return users.flatMap({ (user: KONMetUser) -> String in
-                    return user.userID
+                return users.flatMap({ (user: KONUserReference) -> String? in
+                    if let userID = user.userID {
+                        return userID
+                    }
+                    return nil
                 })
             }
         }
@@ -45,7 +51,7 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
             }
         }
         
-        func userForID(userID: String) -> KONMetUser? {
+        func userForID(userID: String) -> KONUserReference? {
             for user in users {
                 if user.userID == userID {
                     return user
@@ -66,9 +72,14 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
     static let sharedInstance: KONUserManager = KONUserManager()
     
     private let stateController = KONStateController.sharedInstance
-
-    dynamic var meUser: KONMeUser!
-    var nearbyUsers: [KONNearbyUser] = []
+    
+    dynamic var currentUser: KONUserReference?
+    
+    var nearbyUsers = [KONUserReference]() {
+        didSet {
+            observers.notify(self)
+        }
+    }
     
     dynamic var metUsers: MetUsers = MetUsers() {
         didSet {
@@ -78,6 +89,9 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
     
     // Callbacks
     var metControllerUpdateCallback: (() -> Void)?
+    
+    // Observers
+    var observers = KONObservers<KONUserManager>()
     
     // MARK: - KONStateControllable Protocol
     
@@ -91,19 +105,18 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
     
     func registerWithStateController() {
         
-        let value = true
-        let meUserQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONUserManager.meUser), evaluationValue: value)
-        let meUserAvailableRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.meUserAvailableRule, targetKeyQueries: [meUserQuery])
+        let currentUserQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONUserManager.currentUser), evaluationValue: true)
+        let currentUserAvailableRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.currentUserAvailableRule, targetKeyQueries: [currentUserQuery])
         
-        meUserAvailableRule.evaluationCallback = {[weak self] (rule, successful, context) in
+        currentUserAvailableRule.evaluationCallback = {[weak self] (rule, successful, context) in
             guard let `self` = self else { return }
 
             if !successful {
-                self.populateMeUser()
             }
         }
         
-        stateController.registerRules(target: self, rules: [meUserAvailableRule])
+        stateController.registerRules(target: self, rules: [currentUserAvailableRule])
+     
     }
     
     func unregisterWithStateController() {
@@ -112,14 +125,10 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
     
     // MARK: - 
     
-    func populateMeUser() {
-        meUser = KONMeUser(firstName: "Chance", lastName: "Daniel")
-    }
-    
     func addMetUsersWithUserIDs(userIDs: [String]) {
         
         for userID in userIDs {
-            metUsers.users.append(KONMetUser(userID: userID))
+            metUsers.users.append(KONUserReference(userID: userID))
         }
         
     }
@@ -141,15 +150,6 @@ class KONUserManager: NSObject, KONTransportResponder, KONStateControllable {
             }
         }
     }
-
-    
-    // MARK: - Fake Data
-    func createDummyNearbyUsers() {
-        for user in 0..<10 {
-            nearbyUsers.append(KONNearbyUser(firstName: "Nearby\(user)", lastName: nil))
-        }
-    }
-    
     
     /* MARK: - KONLocationManagerDelegate
     

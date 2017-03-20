@@ -10,6 +10,33 @@ import UIKit
 import Firebase
 
 
+// MARK: - StateController Extension 
+
+extension KONStateController {
+    func queryForCurrentUserID() -> String? {
+        if let userManager = self.registeredManagerForTargetName(KONUserManager.className) as? KONUserManager {
+            return userManager.currentUser?.userID
+        }
+        return nil
+    }
+    
+    func addNearbyUser(_ userRef: KONUserReference) {
+        if let userManager = self.registeredManagerForTargetName(KONUserManager.className) as? KONUserManager {
+            if !userManager.nearbyUsers.contains(userRef) {
+                userManager.nearbyUsers.append(userRef)
+            }
+        }
+    }
+    
+    func removeNearbyUser(_ userRef: KONUserReference) {
+        if let userManager = self.registeredManagerForTargetName(KONUserManager.className) as? KONUserManager {
+            if let userIndex = userManager.nearbyUsers.index(of: userRef) {
+                userManager.nearbyUsers.remove(at: userIndex)
+            }
+        }
+    }
+}
+
 // MARK: - KONNetworkManager
 
 class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerDataSource {
@@ -60,13 +87,13 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
     func registerWithStateController() {
         
         let locationAvailableQuery = KONTargetKeyQuery(targetName: KONLocationManager.className, key: #keyPath(KONLocationManager.latestLocationHash), evaluationValue: true)
-        let meUserAvailableQuery = KONTargetKeyQuery(targetName: KONUserManager.className, key: #keyPath(KONUserManager.meUser), evaluationValue: true)
-        let meUserAndLocationAvailableRule  = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.meUserAndLocationAvailableRule, targetKeyQueries: [locationAvailableQuery, meUserAvailableQuery], condition: .valuesChanged)
-        meUserAndLocationAvailableRule.evaluationCallback = {[weak self] (rule, successful, context) in
+        let currentUserAvailableQuery = KONTargetKeyQuery(targetName: KONUserManager.className, key: #keyPath(KONUserManager.currentUser), evaluationValue: true)
+        let currentUserAndLocationAvailableRule  = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.currentUserAndLocationAvailableRule, targetKeyQueries: [locationAvailableQuery, currentUserAvailableQuery], condition: .valuesChanged)
+        currentUserAndLocationAvailableRule.evaluationCallback = {[weak self] (rule, successful, context) in
             guard let `self` = self else { return }
             
             let locationKey = #keyPath(KONLocationManager.latestLocationHash)
-            let userKey = #keyPath(KONUserManager.meUser)
+            let userKey = #keyPath(KONUserManager.currentUser)
 
             if !successful {
                 if let failedKeys = context?[Constants.StateController.RuleContextKeys.failedKeys] as? [String] {
@@ -82,13 +109,11 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
             }
             else {
                 // Start location and user database observers
-                if let context = context, let meUser = context[userKey] as? KONMeUser, let locationHash = context[locationKey] as? String  {
-                    self.updateDatabaseWithMeUser(user: meUser)
+                if let context = context, let currentUser = context[userKey] as? KONUserReference, let locationHash = context[locationKey] as? String  {
+                    self.updateDatabaseWithCurrentUser(currentUser)
                     self.startUserBasedDatabaseObservers()
-                    self.updateLocationForUser(userID: meUser.userID, locationHash: locationHash)
+                    self.updateLocationForUser(userRef: currentUser, locationHash: locationHash)
                     self.updateLocationBasedDatabaseObserversWithLocation(locationHash)
-                    
-//                    stateController.unreigsterRule(rule: meUserAndLocationAvailableRule)
                 }
             }
         }
@@ -98,8 +123,6 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
         metUsersUpdatedRule.evaluationCallback = {[weak self] (rule, successful, context) in
             guard let `self` = self else { return }
             
-//            let usersKey = #keyPath(KONUserManager.metUsers.recentUserID)
-
             if successful {
                 if let context = context {
                     for key in rule.allKeys {
@@ -112,7 +135,7 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
             }
         }
         
-        stateController.registerRules(target: self, rules: [meUserAndLocationAvailableRule, metUsersUpdatedRule])
+        stateController.registerRules(target: self, rules: [currentUserAndLocationAvailableRule, metUsersUpdatedRule])
  
     }
     
@@ -130,54 +153,68 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
         userStateController.unregisterDataSource()
     }
     
-    // MARK: KONUserStateControllerDataSource Protocol 
+    // MARK: - KONUserStateControllerDataSource Protocol
     
-    func didChangeUserIDs(_ userIDs: [String], toState state: KONUserState) {
-        print("Changed UserID: \(userIDs) to state: \(state)")
+    func didChangeUsers(_ userRefs: [KONUserReference], toState state: KONUserState) {
+        print("Changed Users: \(userRefs)) to state: \(state)")
+        
         if state == .missing {
-            userStateController.removeUserIDs(userIDs)
+            userStateController.removeUsers(userRefs)
         }
-        if state == .inRegion {
-            updateDatabaseWithLocationRequestForUsersIDs(userIDs: userStateController.regionUserIDs)
+        else if state == .inRegion {
+            updateDatabaseWithLocationRequestForUsers(userStateController.regionUsers)
         }
         else if state == .nearby {
-            updateDatabaseWithNearbyUsersIDs(userIDs)
+            updateDatabaseWithNearbyUsers(userRefs)
+            for userRef in userRefs {
+                queryDatabaseForUserProfileForUser(userRef, completion: {[weak self] (userRef) in
+                    guard let `self` = self else { return }
+                    self.stateController.addNearbyUser(userRef)
+                })
+            }
         }
         else if state == .met {
-            updateDatabaseWithMetUsersIDs(userIDs)
+            updateDatabaseWithMetUsers(userRefs)
         }
         
         for callback in userStateControllerCallbacks {
             callback()
         }
     }
-    
-    func didRemoveUserID(_ userID: String) {
-        print("Removed UserID: \(userID)")
+
+    func didRemoveUser(_ userRef: KONUserReference) {
+        print("Removed User: \(userRef)")
         for callback in userStateControllerCallbacks {
             callback()
         }
     }
+
     
-    func didLoseUserID(_ userID: String) {
-        processMissingUserIDs([userID])
+    func didLoseUser(_ userRef: KONUserReference) {
+        processMissingUsers([userRef])
     }
     
     
     // MARK: - Database Updates
     
-    func updateDatabaseWithMeUser(user: KONMeUser) {
-        databaseRef.child("users").child(user.userID).setValue(["firstName" : user.name?.firstName, "lastName" : user.name?.lastName])
+    func updateDatabaseWithCurrentUser(_ userRef: KONUserReference) {
+        if let userID = userRef.userID, let lastName = userRef.lastName {
+            databaseRef.child("users").child(userID).setValue(["firstName" : userRef.firstName, "lastName" : lastName])
+        }
     }
     
-    func updateLocationForUser(userID: String, locationHash: String) {
-        databaseRef.child("userLocations/\(userID)").setValue(["location" : locationHash])//, "timestamp" : location.timestamp.description(with: Locale.current)])
+    func updateLocationForUser(userRef: KONUserReference, locationHash: String) {
+        if let userID = userRef.userID {
+            databaseRef.child("userLocations/\(userID)").setValue(["location" : locationHash])
+        }
     }
     
-    func updateDatabaseWithLocationRequestForUsersIDs(userIDs: [String]) {
-        var userIDs = userIDs
-        if let meUserID = queryForMeUserID() {
-            userIDs.append(meUserID)
+    func updateDatabaseWithLocationRequestForUsers(_ userRefs: [KONUserReference]) {
+        
+        var userIDs = userRefs.flatMap{$0.userID}
+        
+        if let currentUserID = stateController.queryForCurrentUserID() {
+            userIDs.append(currentUserID)
         }
         
         for userID in userIDs {
@@ -186,60 +223,63 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
     }
     
     
-    func updateDatabaseWithNearbyUsersIDs(_ userIDs: [String]) {
-        guard let meUserID = queryForMeUserID() else { return }
+    func updateDatabaseWithNearbyUsers(_ userRefs: [KONUserReference]) {
+        guard let currentUserID = stateController.queryForCurrentUserID() else { return }
         
         let timestamp = ["timestamp" : Date().timeIntervalSince1970]
         
-        for userID in userIDs {
-//            self.databaseRef.child("nearbyUsers/\(meUserID)/nearby/\(userID)").setValue(timestamp)
-            
-            self.databaseRef.child("nearbyUsers/\(meUserID)/nearby/\(userID)").childByAutoId().setValue(timestamp)
+        for userID in userRefs.flatMap({$0.userID}) {
+            self.databaseRef.child("nearbyUsers/\(currentUserID)/nearby/\(userID)").childByAutoId().setValue(timestamp)
         }
     }
     
-    func processMissingUserIDs(_ userIDs: [String]) {
-        guard let meUserID = queryForMeUserID() else { return }
+    func processMissingUsers(_ userRefs: [KONUserReference]) {
+        guard let currentUserID = stateController.queryForCurrentUserID() else { return }
 
-        print("Process missing userIDs: \(userIDs)")
+        print("Process missing users: \(userRefs)")
         
-        for userID in userIDs {
-            queryDatabaseForLastTimestampForUserID(userID, completion: {[weak self] (timestamp) in
-                guard let `self` = self else { return }
-                
-                let nowStamp = Date().timeIntervalSince1970
-                let meetDuration = (nowStamp - timestamp) / 60
-                
-                print("Saw \(userID) for \(meetDuration) minutes")
-                
-                // TODO: Compare against threshold 
-                if (meetDuration > KONMeetDuration) {
-                    if (self.allowMet) {
-                        self.userStateController.moveUserIDs([userID], toState: .met)
+        for userRef in userRefs {
+            if let userID = userRef.userID {
+                queryDatabaseForLastTimestampForUserID(userID, completion: {[weak self] (timestamp) in
+                    guard let `self` = self else { return }
+                    
+                    let nowStamp = Date().timeIntervalSince1970
+                    let meetDuration = (nowStamp - timestamp) / 60
+                    
+                    print("Saw \(userID) for \(meetDuration) minutes")
+                    
+                    // TODO: Compare against threshold 
+                    if (meetDuration > KONMeetDuration) {
+                        if (self.allowMet) {
+                            // TODO: - Change to userRefs
+                            self.userStateController.moveUsers([userRef], toState: .met)
+                        }
                     }
-                }
-                else {
-                    self.databaseRef.child("nearbyUsers/\(meUserID)/nearby/\(userID)").removeValue()
-                }
-            })
+                    else {
+                        self.databaseRef.child("nearbyUsers/\(currentUserID)/nearby/\(userID)").removeValue()
+                    }
+                })
+            }
         }
     }
         
     
-    func updateDatabaseWithMetUsersIDs(_ userIDs: [String]) {
-        guard let meUserID = queryForMeUserID() else { return }
+    func updateDatabaseWithMetUsers(_ userRefs: [KONUserReference]) {
+        guard let currentUserID = stateController.queryForCurrentUserID() else { return }
         
-        for userID in userIDs {
-            databaseRef.child("metUsers/\(meUserID)/met/").updateChildValues([userID : true])
-            self.databaseRef.child("nearbyUsers/\(meUserID)/nearby/\(userID)").removeValue()
+        for userID in userRefs.flatMap({$0.userID}) {
+            databaseRef.child("metUsers/\(currentUserID)/met/").updateChildValues([userID : true])
+            self.databaseRef.child("nearbyUsers/\(currentUserID)/nearby/\(userID)").removeValue()
         }
     }
     
-    func removeUserFromDatabase(userID: String) {
-        databaseRef.child("users/\(userID)").removeValue()
-        databaseRef.child("userLocations/\(userID)").removeValue()
-        databaseRef.child("nearbyUsers/\(userID)").removeValue()
-        databaseRef.child("locationRequestedUsers/\(userID)").removeValue()
+    func removeUserFromDatabase(userRef: KONUserReference) {
+        if let userID = userRef.userID {
+            databaseRef.child("users/\(userID)").removeValue()
+            databaseRef.child("userLocations/\(userID)").removeValue()
+            databaseRef.child("nearbyUsers/\(userID)").removeValue()
+            databaseRef.child("locationRequestedUsers/\(userID)").removeValue()
+        }
     }
     
     // MARK: - Database Observing
@@ -277,9 +317,9 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
     }
     
     func observeDatabaseForLocationRequest() {
-        guard let meUserID = queryForMeUserID() else { return }
+        guard let currentUserID = stateController.queryForCurrentUserID() else { return }
 
-        let locationRequestQueryRef = databaseRef.child("locationRequestedUsers/\(meUserID)")
+        let locationRequestQueryRef = databaseRef.child("locationRequestedUsers/\(currentUserID)")
         let observeHandle = locationRequestQueryRef.observe(.childAdded, with: {[weak self] (requestSnapshot) in
             guard let `self` = self else { return }
             
@@ -307,7 +347,7 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
     }
     
     func observeDatabaseForUsersInRange(range: Int, locationHash: String) {
-        guard let meUserID = queryForMeUserID() else { return }
+        guard let currentUserID = stateController.queryForCurrentUserID() else { return }
 
         let startHash = String(locationHash.characters.prefix(range))
         let endHash = String(locationHash.characters.prefix(range)) + "~"
@@ -319,33 +359,38 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
             if let users = locationSnapshot.value as? [String: Any] {
                 
                 var userIDs: Set<String> = Set(users.keys)
-                userIDs.remove(meUserID)
+                userIDs.remove(currentUserID)
                 
-                let previousMetUserIDs = self.userStateController.metUserIDs
-                var previousUserIDsInRange = [String]()
-                var lostUserIDsInRange = [String]()
+                var userRefs = Set(KONUserReference.userRefsFromUserIDs(Array(userIDs)))
+                
+                let previouslyMetUsers = self.userStateController.metUsers
+                var previousUsersInRange = [KONUserReference]()
+                var missingUsersInRange = [KONUserReference]()
+
                 var state: KONUserState = .missing
                 
                 if range == KONRegionRange {
-                    previousUserIDsInRange = self.userStateController.regionUserIDs
-                    lostUserIDsInRange = Array(Set(previousUserIDsInRange).subtracting(userIDs))
+                
+                    previousUsersInRange = self.userStateController.regionUsers
+                    missingUsersInRange = Array(Set(previousUsersInRange).subtracting(userRefs))
                     state = .inRegion
-                    userIDs.subtract(self.userStateController.nearbyUserIDs)
+                    userRefs.subtract(self.userStateController.nearbyUsers)
+
+                    
                 }
                 else if range == KONNearbyRange {
-                    previousUserIDsInRange = self.userStateController.nearbyUserIDs
-                    lostUserIDsInRange = Array(Set(previousUserIDsInRange).subtracting(userIDs))
+                    previousUsersInRange = self.userStateController.nearbyUsers
+                    missingUsersInRange = Array(Set(previousUsersInRange).subtracting(userRefs))
                     state = .nearby
+                   
                 }
                 
-                userIDs.subtract(previousUserIDsInRange + previousMetUserIDs)
-                
-                if userIDs.count > 0 {
-                    self.userStateController.moveUserIDs(Array(userIDs), toState: state)
+                userRefs.subtract(previousUsersInRange + previouslyMetUsers)
+                if userRefs.count > 0 {
+                    self.userStateController.moveUsers(Array(userRefs), toState: state)
                 }
-                
-                if lostUserIDsInRange.count > 0 {
-                    self.userStateController.moveUserIDs(Array(lostUserIDsInRange), toState: KONUserState(rawValue: state.rawValue - 1)!)
+                if missingUsersInRange.count > 0 {
+                    self.userStateController.moveUsers(Array(missingUsersInRange), toState: KONUserState(rawValue: state.rawValue - 1)!)
                 }
             }
         })
@@ -354,9 +399,9 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
     }
     
     func observeDatabaseForMetUsers() {
-        guard let meUserID = queryForMeUserID() else { return }
+        guard let currentUserID = stateController.queryForCurrentUserID() else { return }
 
-        let metObserveRef = databaseRef.child("metUsers/\(meUserID)/met/")//.queryOrderedByKey()
+        let metObserveRef = databaseRef.child("metUsers/\(currentUserID)/met/")//.queryOrderedByKey()
         
         let childAddedObserveHandle = metObserveRef.observe(.childAdded, with: {[weak self] (metSnapshot) in
             guard let `self` = self else { return }
@@ -395,10 +440,9 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
     // MARK: - Database Queries
     
     func queryDatabaseForLastTimestampForUserID(_ userID: String, completion: @escaping (Double) -> Void) {
-        guard let meUserID = queryForMeUserID() else { return }
+        guard let currentUserID = stateController.queryForCurrentUserID() else { return }
         
-        let nearbyObserveRef = databaseRef.child("nearbyUsers/\(meUserID)/nearby/\(userID)")
-//        databaseRef.child("nearbyUsers/\(meUserID)/nearby/").queryOrderedByValue()
+        let nearbyObserveRef = databaseRef.child("nearbyUsers/\(currentUserID)/nearby/\(userID)")
         
         nearbyObserveRef.observeSingleEvent(of: .value, with: { (timestampSnapshot) in
             if let timestampDict = timestampSnapshot.value as? [String: Double], let timestamp = timestampDict["timestamp"] {
@@ -424,18 +468,21 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserStateControllerD
 
     }
     
-    // MARK: - Helpers
-    
-    func queryForMeUserID() -> String? {
-        let userIDQuery = KONTargetKeyQuery(targetName: KONUserManager.className, key: #keyPath(KONUserManager.meUser.userID), evaluationValue: true)
-        let (successful, value) = stateController.performTargetKeyQuery(userIDQuery)
-        if successful {
-            if let userID = value as? String {
-                return userID
+    func queryDatabaseForUserProfileForUser(_ userRef: KONUserReference, completion: @escaping (KONUserReference) -> Void) {
+        guard let userID = userRef.userID else { return }
+        
+        let userProfileRef = databaseRef.child("users/\(userID)")
+        
+        userProfileRef.observeSingleEvent(of: .value, with: { (profileSnapshot) in
+            if let profile = profileSnapshot.value as? [String : String], let firstName = profile["firstName"], let lastName = profile["lastName"] {
+                userRef.firstName = firstName
+                userRef.lastName = lastName
+                completion(userRef)
             }
-        }
-        return nil
+        })
     }
+    
+    // MARK: - Helpers
     
     func updateLocationBasedDatabaseObserversWithLocation(_ locationHash: String) {
         removeLocationBasedDatabaseObservers()

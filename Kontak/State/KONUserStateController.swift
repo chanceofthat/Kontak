@@ -13,9 +13,9 @@ enum KONUserState: Int {
 }
 
 protocol KONUserStateControllerDataSource {
-    func didChangeUserIDs(_ userIDs: [String], toState state: KONUserState)
-    func didRemoveUserID(_ userID: String)
-    func didLoseUserID(_ userID: String)
+    func didChangeUsers(_ userRefs: [KONUserReference], toState state: KONUserState)
+    func didRemoveUser(_ userRef: KONUserReference)
+    func didLoseUser(_ userRef: KONUserReference)
 }
 
 class KONUserStateController: NSObject {
@@ -25,12 +25,16 @@ class KONUserStateController: NSObject {
     static let sharedInstance = KONUserStateController()
     
     private var dataSource: KONUserStateControllerDataSource?
-    var regionUserIDs = [String]()
-    var nearbyUserIDs = [String]()
-    var metUserIDs = [String]()
-    var missingUserIDs = [String]()
     
+    var regionUsers = [KONUserReference]()
+    var nearbyUsers = [KONUserReference]()
+    var metUsers = [KONUserReference]()
+    var missingUsers = [KONUserReference]()
     
+//    var regionUserIDs = [String]()
+//    var nearbyUserIDs = [String]()
+//    var metUserIDs = [String]()
+//    var missingUserIDs = [String]()
     
     // MARK: -
     private override init() {}
@@ -41,22 +45,21 @@ class KONUserStateController: NSObject {
     
     func unregisterDataSource() {
         dataSource = nil
-        regionUserIDs.removeAll()
-        nearbyUserIDs.removeAll()
-        metUserIDs.removeAll()
-//        missingUserIDs.removeAll()
+        regionUsers.removeAll()
+        nearbyUsers.removeAll()
+        metUsers.removeAll()
     }
     
-    func addUserIDs(_ userIDs: [String], forState state: KONUserState) {
+    func addUsers(_ userRefs: [KONUserReference], forState state: KONUserState) {
         switch state {
         case .inRegion:
-            regionUserIDs.append(contentsOf: userIDs)
+            regionUsers.append(contentsOf: userRefs)
             break
         case .nearby:
-            nearbyUserIDs.append(contentsOf: userIDs)
+            nearbyUsers.append(contentsOf: userRefs)
             break
         case .met:
-            metUserIDs.append(contentsOf: userIDs)
+            metUsers.append(contentsOf: userRefs)
             break
 //        case .missing:
 //            missingUserIDs.append(contentsOf: userIDs)
@@ -64,41 +67,41 @@ class KONUserStateController: NSObject {
             break
         }
         
-        dataSource?.didChangeUserIDs(userIDs, toState: state)
+        dataSource?.didChangeUsers(userRefs, toState: state)
     }
     
-    func moveUserIDs(_ userIDs: [String], toState state: KONUserState) {
+    func moveUsers(_ userRefs: [KONUserReference], toState state: KONUserState) {
         
-        removeUserIDs(userIDs)
-        addUserIDs(userIDs, forState: state)
+        removeUsers(userRefs)
+        addUsers(userRefs, forState: state)
     }
     
-    func removeUserIDs(_ userIDs: [String]) {
-        for userID in userIDs {
-            if let index = regionUserIDs.index(of: userID) {
-                dataSource?.didLoseUserID(userID)
-                regionUserIDs.remove(at: index)
+    func removeUsers(_ userRefs: [KONUserReference]) {
+        for userRef in userRefs {
+            if let index = regionUsers.index(of: userRef) {
+                dataSource?.didLoseUser(userRef)
+                regionUsers.remove(at: index)
             }
             
-            if let index = nearbyUserIDs.index(of: userID) {
-                nearbyUserIDs.remove(at: index)
+            if let index = nearbyUsers.index(of: userRef) {
+                nearbyUsers.remove(at: index)
             }
             
-            if let index = metUserIDs.index(of: userID) {
-                metUserIDs.remove(at: index)
+            if let index = metUsers.index(of: userRef) {
+                metUsers.remove(at: index)
             }
             
-            if let index = missingUserIDs.index(of: userID) {
-                missingUserIDs.remove(at: index)
+            if let index = missingUsers.index(of: userRef) {
+                missingUsers.remove(at: index)
             }
-            dataSource?.didRemoveUserID(userID)
+            dataSource?.didRemoveUser(userRef)
         }
     }
     
-    func stateForUserID(_ userID: String) -> KONUserState {
-        if regionUserIDs.contains(userID) { return .inRegion }
-        if nearbyUserIDs.contains(userID) { return .nearby }
-        if metUserIDs.contains(userID) { return .met }
+    func stateForUser(_ userRef: KONUserReference) -> KONUserState {
+        if regionUsers.contains(userRef) { return .inRegion }
+        if nearbyUsers.contains(userRef) { return .nearby }
+        if metUsers.contains(userRef) { return .met }
 //        if missingUserIDs.contains(userID) { return .missing }
         
         return .missing
