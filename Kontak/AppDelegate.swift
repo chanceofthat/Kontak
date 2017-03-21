@@ -22,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FIRApp.configure()
         
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
         
         let stateController = KONStateController.sharedInstance
         let userManager = KONUserManager.sharedInstance
@@ -31,41 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         stateController.registerManagers([userManager, locationManager, networkManager])
         stateController.start()
         
-        /*
-        if let window = self.window {
-            if let tabBarController = window.rootViewController as? UITabBarController {
-                tabBarController.selectedIndex = 1;
-            }
-            
-        }
-        */
-        
-        /*
-        class TestClass: NSObject {
-            dynamic var foo = true
-            dynamic var bar = false
-        }
-        
-        let testClass = TestClass()
-        
-        // Test StateController
-        let stateController = KONStateController.sharedInstance
-//        stateController.registerForObservationOfKeyPaths(target: testClass, keyPaths: [#keyPath(TestClass.foo), #keyPath(TestClass.bar)])
-        let testRule = KONStateControllerRule(trueKeys: [#keyPath(TestClass.foo)], falseKeys: [#keyPath(TestClass.bar)])
-        stateController.registerRules(target: testClass, rules: [testRule])
-        testRule.ruleFailureCallback = { (name, reason) in
-            
-        }
-        testRule.ruleSuccessCallback = { (name) in
-            
-        }
-//        stateController.registerRule(rule: testRule)
 
-        testClass.bar = true
-        testClass.bar = false
-        stateController.shutdown()
-        
-        */
         return true
     }
 

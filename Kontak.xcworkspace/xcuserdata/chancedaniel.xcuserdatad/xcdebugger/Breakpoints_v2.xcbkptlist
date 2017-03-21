@@ -89,28 +89,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Kontak/Managers/KONUserManager.swift"
-            timestampString = "511587284.878042"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "KONUserManager"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Kontak/State/KONStateController.swift"
-            timestampString = "510615717.371196"
+            timestampString = "511777935.610009"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "212"
-            endingLineNumber = "212"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
             landmarkName = "performTargetKeyQuery(_:mutating:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -137,46 +121,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Kontak/Managers/KONUserManager.swift"
-            timestampString = "511587284.878042"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
-            landmarkName = "updateMetUsersWithUserIDs(userIDs:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Kontak/State/KONStateController.swift"
-            timestampString = "510616391.486974"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "412"
-            endingLineNumber = "412"
-            landmarkName = "didReceiveTransportEvent(_:data:targetName:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Kontak/ViewControllers/KONMetViewController.swift"
-            timestampString = "510530111.111652"
+            timestampString = "511747716.742115"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
-            landmarkName = "observeTransportEvent(_:)"
-            landmarkType = "7">
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "KONMetViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -186,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Kontak/ViewControllers/KONDiagnosticsViewController.swift"
-            timestampString = "510704393.72436"
+            timestampString = "511774512.283338"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
             landmarkName = "registerWithStateController()"
             landmarkType = "7">
          </BreakpointContent>
@@ -202,28 +154,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Kontak/ViewControllers/KONDiagnosticsViewController.swift"
-            timestampString = "511573954.283211"
+            timestampString = "511775062.61204"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
             landmarkName = "updateLocationFields()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Kontak/Managers/KONNetworkManager.swift"
-            timestampString = "511726777.191073"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "321"
-            endingLineNumber = "321"
-            landmarkName = "removeDatabaseObservers(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -249,46 +185,62 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Kontak/ViewControllers/KONUsersViewController.swift"
-            timestampString = "511643033.56178"
+            filePath = "Kontak/Managers/KONNetworkManager.swift"
+            timestampString = "511776221.543802"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
-            landmarkName = "tableView(_:cellForRowAt:)"
+            startingLineNumber = "292"
+            endingLineNumber = "292"
+            landmarkName = "processMissingUsers(_:)"
             landmarkType = "7">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Kontak.KONUsersViewController.tableView (__ObjC.UITableView, cellForRowAt : Foundation.IndexPath) -&gt; __ObjC.UITableViewCell"
+                  symbolName = "Kontak.KONNetworkManager.processMissingUsers (Swift.Array&lt;Kontak.KONUserReference&gt;) -&gt; ()"
                   moduleName = "Kontak"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/chancedaniel/Documents/College/Classwork/CPE436/Project/Kontak/Kontak/ViewControllers/KONUsersViewController.swift"
-                  timestampString = "511643033.738099"
+                  urlString = "file:///Users/chancedaniel/Documents/College/Classwork/CPE436/Project/Kontak/Kontak/Managers/KONNetworkManager.swift"
+                  timestampString = "511729179.056534"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "105"
-                  endingLineNumber = "105"
-                  offsetFromSymbolStart = "252">
+                  startingLineNumber = "244"
+                  endingLineNumber = "244"
+                  offsetFromSymbolStart = "397">
                </Location>
                <Location
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Kontak.KONUsersViewController.tableView (__ObjC.UITableView, cellForRowAt : Foundation.IndexPath) -&gt; __ObjC.UITableViewCell"
+                  symbolName = "Kontak.KONNetworkManager.(processMissingUsers (Swift.Array&lt;Kontak.KONUserReference&gt;) -&gt; ()).(closure #1)"
                   moduleName = "Kontak"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/chancedaniel/Documents/College/Classwork/CPE436/Project/Kontak/Kontak/ViewControllers/KONUsersViewController.swift"
-                  timestampString = "511643033.739889"
+                  urlString = "file:///Users/chancedaniel/Documents/College/Classwork/CPE436/Project/Kontak/Kontak/Managers/KONNetworkManager.swift"
+                  timestampString = "511729179.05803"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "105"
-                  endingLineNumber = "105"
-                  offsetFromSymbolStart = "500">
+                  startingLineNumber = "244"
+                  endingLineNumber = "244"
+                  offsetFromSymbolStart = "26">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Kontak/State/KONUserStateController.swift"
+            timestampString = "511741988.720752"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "KONUserStateController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

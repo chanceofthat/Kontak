@@ -8,7 +8,7 @@
 
 import UIKit
 
-class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, KONTransportObserver {
+class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     // MARK: - Properties
     @IBOutlet var backgroundView: KONBackgroundView!
@@ -55,6 +55,7 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func registerWithStateController() {
         let stateController = KONStateController.sharedInstance
         
+        /*
         let metUsersUpdatedQuery = KONTargetKeyQuery(targetName: KONUserManager.className, key: #keyPath(KONUserManager.metUsers.users), evaluationValue: true)
         let metUsersUpdatedRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.updatedMetUsersAvailable, targetKeyQueries: [metUsersUpdatedQuery]) {[weak self] (rule, successful, context) in
             guard let `self` = self else { return }
@@ -73,6 +74,7 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         stateController.registerRules(target: self, rules: [metUsersUpdatedRule])
         stateController.registerTransportObserver(self, regardingTarget: KONUserManager.className)
+ */
     }
 
     // MARK: - UITableViewDelegate Protocol
@@ -107,13 +109,13 @@ class KONMetViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     
     // MARK: - KONTransportObserver
-    
+    /*
     func observeTransportEvent(_ event: TransportEventType) {
         print("Did Observe Transport Event \(event)")
         tableView.reloadData()
     }
     
-    
+    */
     
     
     

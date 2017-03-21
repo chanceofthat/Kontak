@@ -13,24 +13,6 @@ protocol KONStateControllable {
     func stop()
 }
 
-// MARK: - Transport
-
-enum TransportEventType {
-    case dataReceived
-    case dataRemoved
-    case dataChanged
-}
-
-protocol KONTransportResponder: AnyObject {
-    func didReceiveData(_ data: Any)
-    func didRemoveData(_ data: Any)
-    func didChangeData(_ data: Any)
-}
-
-protocol KONTransportObserver: AnyObject {
-    func observeTransportEvent(_ event: TransportEventType);
-}
-
 // MARK: - KONWeakObject
 
 class KONWeakObject: Hashable, Equatable {
@@ -143,7 +125,6 @@ class KONStateController: NSObject {
     private var registeredManagers = [KONStateControllable]()
     var ruleForName = [String: KONStateControllerRule]()
     private var registeredTargetForTargetName = [String : KONWeakObject]()
-    private var registeredTransportObserverForTargetName = [String : KONWeakObject]()
     private var evaluationForRuleName = [String : Bool]()
     private var unassociatedKeysForTargetName = [String : [String]]()
     private var rulesForKey = [String : Set<KONStateControllerRule>]()
@@ -173,8 +154,6 @@ class KONStateController: NSObject {
         }
     }
         
-    /* For Diagnostic Purposes Only */
-    /* Managers should only be interacted with via queries, rules, and transport observation */
     func registeredManagerForTargetName(_ targetName: String) -> KONStateControllable? {
         for manager in registeredManagers {
             if (manager as! NSObject).className.contains(targetName) {
@@ -187,20 +166,8 @@ class KONStateController: NSObject {
     func shutdown() {
         targetObserver = nil
     }
-
-    // Things that change - My Location, People in Range, People Nearby, My Information, Location Requests
-    // Location Manager Available, Exited Region, 
     
-    
-    // MARK: - Observation
-    
-    func registerTransportObserver(_ observer: KONTransportObserver, regardingTarget targetName: String) {
-        let weakTarget = KONWeakObject(value: observer as! NSObject)
-        registeredTransportObserverForTargetName[targetName] = weakTarget
-    }
-    
-    // Things that care - View Controllers, Managers
-    
+            
     // MARK: - Query Context
     func performTargetKeyQuery(_ targetKeyQuery: KONTargetKeyQuery) -> (successful: Bool, value: Any?) {
         return performTargetKeyQuery(targetKeyQuery, mutating: false)
@@ -383,32 +350,4 @@ class KONStateController: NSObject {
         
         rule.didEvaluateWithResult(evaluationResult, context: context)
     }
-    
-    // check rules and determine state
-    // if MyInformation changes tell network manager to update user profile
-    // if MyInformation is available for the first time, start observing database for metusers, nearbyusers, location requests
-    // if LocationManager becomes available get my current location
-    // if MyLocation becomes avaiable start observing databse for region/nearby users
-    
-    // MARK: - Transport Events
-    
-    func didReceiveTransportEvent(_ event: TransportEventType, data: Any, targetName: String) {
-        print("Did Respond to transport event")
-        
-        if let responder = registeredTargetForTargetName[targetName]?.value as? KONTransportResponder {
-            if event == .dataReceived {
-                responder.didReceiveData(data)
-            }
-            else if event == .dataRemoved {
-                responder.didRemoveData(data)
-            }
-            else if event == .dataChanged {
-                responder.didChangeData(data)
-            }
-        }
-        
-        if let observer = registeredTransportObserverForTargetName[targetName]?.value as? KONTransportObserver {
-            observer.observeTransportEvent(event)
-        }
-    }    
 }

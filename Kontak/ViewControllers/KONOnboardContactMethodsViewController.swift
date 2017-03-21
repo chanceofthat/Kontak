@@ -24,12 +24,14 @@ class KONOnboardContactMethodsViewController: UIViewController, UITableViewDeleg
         // Set Up TableView
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.estimatedRowHeight = 44
+        tableView.rowHeight = UITableViewAutomaticDimension
     }
     
     @IBAction func didPressNextButton(_ sender: Any) {
         
         if let userRef = userRef {
-            let storyboard = UIStoryboard.init(name: "Mainn", bundle: nil)
+            let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
             let usersViewController = storyboard.instantiateViewController(withIdentifier: Constants.Storyboard.Identifiers.usersViewController) as! KONUsersViewController
             
             usersViewController.navigationItem.hidesBackButton = true

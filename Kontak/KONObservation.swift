@@ -9,26 +9,26 @@
 import Foundation
 
 class KONObserverInfo<T> {
-    var callback: ((_ data: T) -> Void)?
+    var callback: ((_ data: T, _ keyPath: String) -> Void)?
     weak var observer: AnyObject?
 }
 
 class KONObservers<T> {
     private var observers = [KONObserverInfo<T>]()
     
-    func observe(observer: AnyObject?, callback: @escaping (_ data: T) -> Void) {
+    func observe(observer: AnyObject?, callback: @escaping (_ data: T, _ keyPath: String) -> Void) {
         let observerInfo = KONObserverInfo<T>()
         observerInfo.observer = observer
         observerInfo.callback = callback
         observers.append(observerInfo)
     }
     
-    func notify(_ data: T) {
+    func notify(_ data: T, keyPath: String) {
         var invalidObserverIndexes = IndexSet()
         
         for (index, observerInfo) in observers.enumerated() {
             if let _ = observerInfo.observer, let callback = observerInfo.callback {
-                callback(data)
+                callback(data, keyPath)
             }
             else {
                 invalidObserverIndexes.insert(index)

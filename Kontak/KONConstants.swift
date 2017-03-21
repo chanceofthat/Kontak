@@ -116,6 +116,7 @@ struct Constants {
                 static let KONDiagnosticCell = "KONDiagnosticTableCellReuseIdentifier"
                 static let onboardContactMethodCell = "KONOnboardContactMethodTableViewCellReuseIdentifier"
                 static let userTableViewCell = "KONUserTableViewCellReuseIdentifier"
+                static let nearbyUserTableViewCell = "KONNearbyUserTableViewCellReuseIdentifier"
             }
             
             struct ContactMethod {

@@ -59,6 +59,13 @@ class KONUserReference: NSObject {
         return false
     }
     
+    override var hash: Int {
+        if let userID = userID {
+            return userID.hash
+        }
+        return 0
+    }
+    
     static func userRefsFromUserIDs(_ userIDs: [String]) -> [KONUserReference] {
         var userRefs = [KONUserReference]()
         for userID in userIDs {

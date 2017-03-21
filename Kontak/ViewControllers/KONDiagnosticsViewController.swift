@@ -39,8 +39,13 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
         tableView.dataSource = self
         
         uuidTextField.text = userManager.currentUser?.userID
-        locationManagerStatusLabel.text = "On"
-        overrideLocationSwitch.isOn = false
+        locationManagerSwitch.isOn = locationManager.overrideLocationHash == nil
+        locationManagerStatusLabel.text = locationManagerSwitch.isOn ? "On" : "Off"
+
+        saveMetOverrideSwitch.isOn = networkManager.allowMet
+        overrideLocationSwitch.isOn = locationManager.updateLocationContinuously
+        
+
 
         registerWithStateController()
         registerWithUserStateController()
@@ -82,22 +87,23 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
     
 
     @IBAction func getLocationButtonPressed(_ sender: Any) {
-        locationManager.useManualLocation = false
+//        locationManager.useManualLocation = false
         locationManager.latestLocationHash = nil
+        locationManagerSwitch.isOn = true
+        locationManagerSwitchToggled(locationManagerSwitch)
     }
     
     
     @IBAction func pushLocationButtonPressed(_ sender: Any) {
-//        if let button = sender as? UIButton {
-            if (geoHashTextField.text != "") {
-                locationManager.useManualLocation = true
-                locationManager.latestLocationHash = geoHashTextField.text
-                flashBackgroundWithColor(.purple)
-            }
-            else {
-                flashBackgroundWithColor(.yellow)
-            }
-//        }
+        if (geoHashTextField.text != "") {
+//            locationManager.useManualLocation = true
+//            locationManager.latestLocationHash = geoHashTextField.text
+            locationManager.overrideLocationHash = geoHashTextField.text
+            flashBackgroundWithColor(.purple)
+        }
+        else {
+            flashBackgroundWithColor(.yellow)
+        }
     }
  
     @IBAction func startButtonPressed(_ sender: Any) {
@@ -128,11 +134,17 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
     @IBAction func locationManagerSwitchToggled(_ sender: Any) {
         if locationManagerSwitch.isOn {
             locationManagerStatusLabel.text = "On"
+            
+            locationManager.overrideLocationHash = nil
             locationManager.start()
+            
         }
         else {
             locationManagerStatusLabel.text = "Off"
+            
+            locationManager.overrideLocationHash = "9q60y622fm"
             locationManager.stop()
+            
         }
     }
     
@@ -147,12 +159,7 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBAction func allowMetOverrideToggled(_ sender: Any) {
         if let overrideSwitch = sender as? UISwitch {
-            if overrideSwitch.isOn {
-                networkManager.allowMet = true
-            }
-            else {
-                networkManager.allowMet = false
-            }
+            networkManager.allowMet = overrideSwitch.isOn
         }
     }
     
@@ -176,13 +183,13 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
         
         switch section {
         case 0:
-            return networkManager.userStateController.regionUsers.count
+            return userManager.regionUsers.count
         case 1:
-            return networkManager.userStateController.nearbyUsers.count
+            return userManager.nearbyUsers.count
         case 2:
-            return networkManager.userStateController.missingUsers.count
+            return userManager.missingUsers.count
         case 3:
-            return networkManager.userStateController.metUsers.count
+            return userManager.metUsers.count
         default:
             return 0
         }
@@ -209,13 +216,13 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
         
         switch indexPath.section {
         case 0:
-            cell.userID.text = networkManager.userStateController.regionUsers[indexPath.row].description
+            cell.userID.text = userManager.regionUsers[indexPath.row].description
         case 1:
-            cell.userID.text = networkManager.userStateController.nearbyUsers[indexPath.row].description
+            cell.userID.text = userManager.nearbyUsers[indexPath.row].description
         case 2:
-            cell.userID.text = networkManager.userStateController.missingUsers[indexPath.row].description
+            cell.userID.text = userManager.missingUsers[indexPath.row].description
         case 3:
-            cell.userID.text = networkManager.userStateController.metUsers[indexPath.row].description
+            cell.userID.text = userManager.metUsers[indexPath.row].description
         default:
             break
         }

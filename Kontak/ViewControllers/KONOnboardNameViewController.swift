@@ -117,10 +117,10 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate, UIGes
     @IBAction func didPressSkipButton(_ sender: Any) {
         userRef = KONUserReference(firstName: "Chance", lastName: "Daniel")
         userRef?.bio = "I am awesome"
-        userRef?.profilePicture = UIImage()
+        userRef?.profilePicture = #imageLiteral(resourceName: "SampleProfileImage")
         userRef?.contactMethodDictionary = [Constants.TableView.Cells.ContactMethod.methodTitles[0][0] : "7076941519"]
         
-        let storyboard = UIStoryboard.init(name: "Mainn", bundle: nil)
+        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
         let usersViewController = storyboard.instantiateViewController(withIdentifier: Constants.Storyboard.Identifiers.usersViewController) as! KONUsersViewController
         
         usersViewController.navigationItem.hidesBackButton = true

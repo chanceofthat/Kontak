@@ -57,7 +57,7 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     var updateLocationContinuously = false
     
     // Diagnostic
-    var useManualLocation = false
+//    var useManualLocation = false
     var overrideLocationHash: String? {
         didSet {
             self.updateLocation()
@@ -218,14 +218,14 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
         if locationManager?.delegate == nil { return }
         if let locationManager = locationManager {
 
-            if useManualLocation {
-                let lastLocationHash = latestLocationHash
-                latestLocationHash = lastLocationHash
-            }
-            else {
+//            if useManualLocation {
+//                let lastLocationHash = latestLocationHash
+//                latestLocationHash = lastLocationHash
+//            }
+//            else {
                 locationManager.startUpdatingLocation()
                 locationManager.requestLocation()
-            }
+//            }
         }
     }
     
@@ -240,9 +240,9 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
         if let latestLocation = locations.last {
             let lastUpdatedTime = latestLocation.timestamp.timeIntervalSinceNow
             
-//            print("Update Time: \(abs(lastUpdatedTime))")
+            print("Update Time: \(abs(lastUpdatedTime))")
             if abs(lastUpdatedTime) < 1 {
-//                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
+                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
                 
                 self.latestLocation = latestLocation
                 if let overrideLocationHash = overrideLocationHash {
@@ -298,20 +298,5 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
         print("Region Monitoring Did Fail")
     }
-    
-    /* MARK: - KONTransportResponder
-    
-    func didReceiveData(_ data: Any) {
-        
-    }
-    
-    func didChangeData(_ data: Any) {
-        
-    }
-    
-    func didRemoveData(_ data: Any) {
-        
-    }
-     */
     
 }
