@@ -19,6 +19,8 @@ class KONEditProfileViewController: UIViewController, UITextFieldDelegate, UITab
     @IBOutlet weak var characterCountLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
+    weak var usersViewController: KONUsersViewController?
+    
     var userRef: KONUserReference?
     
     var remainingCharacterCount = Constants.DefaultValues.initialRemainingCharacterCount {
@@ -77,6 +79,22 @@ class KONEditProfileViewController: UIViewController, UITextFieldDelegate, UITab
         tableView.rowHeight = UITableViewAutomaticDimension
 
     }
+    
+    override func didMove(toParentViewController parent: UIViewController?) {
+    
+    
+
+        if let usersViewController = usersViewController, let userRef = userRef {
+            userRef.firstName = firstNameTextField.text
+            userRef.lastName = lastNameTextField.text
+            userRef.bio = bioTextView.text
+            
+            usersViewController.setUserProfile(userRef: userRef)
+        }
+
+        
+    }
+    
     
     func dismissKeyboard() {
         view.endEditing(true)
@@ -176,10 +194,6 @@ class KONEditProfileViewController: UIViewController, UITextFieldDelegate, UITab
         
         if indexPath.section == 0 {
             cell.methodTextField.keyboardType = Constants.TableView.Cells.ContactMethod.keyboardTypes[indexPath.row]
-            
-            if indexPath.row == 0 {
-                cell.methodTextField.becomeFirstResponder()
-            }
         }
         else {
             cell.methodTextField.keyboardType = .asciiCapable

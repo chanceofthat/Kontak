@@ -68,7 +68,6 @@ class KONUsersViewController: UIViewController, UITableViewDelegate, UITableView
             self.tableView.reloadData()
         }
         
-        stateController.setManualLocationHash("9q60y622fm")
         
         // Set Up TableView 
         tableView.delegate = self
@@ -79,6 +78,7 @@ class KONUsersViewController: UIViewController, UITableViewDelegate, UITableView
         
 
     }
+    
     
     // MARK: - Actions
     
@@ -194,13 +194,13 @@ class KONUsersViewController: UIViewController, UITableViewDelegate, UITableView
         return cell
     }
     
-
     
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? KONEditProfileViewController {
             destination.userRef = userRef
+            destination.usersViewController = self
         }
     }
     

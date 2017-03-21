@@ -115,7 +115,7 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate, UIGes
     // MARK: - Diagnostic 
     
     @IBAction func didPressSkipButton(_ sender: Any) {
-        userRef = KONUserReference(firstName: "Chance", lastName: "Daniel")
+        userRef = KONUserReference(firstName: "Johnny", lastName: "AppleSeed")
         userRef?.bio = "I am awesome"
         userRef?.profilePicture = #imageLiteral(resourceName: "SampleProfileImage")
         userRef?.contactMethodDictionary = [Constants.TableView.Cells.ContactMethod.methodTitles[0][0] : "7076941519"]
@@ -125,6 +125,7 @@ class KONOnboardNameViewController: UIViewController, UITextFieldDelegate, UIGes
         
         usersViewController.navigationItem.hidesBackButton = true
         usersViewController.userRef = userRef
+        usersViewController.stateController.setManualLocationHash("9q60y622fm")
         self.navigationController?.pushViewController(usersViewController, animated: true)
     }
     

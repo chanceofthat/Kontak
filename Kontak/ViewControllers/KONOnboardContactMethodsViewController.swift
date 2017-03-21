@@ -30,12 +30,19 @@ class KONOnboardContactMethodsViewController: UIViewController, UITableViewDeleg
     
     @IBAction func didPressNextButton(_ sender: Any) {
         
+        for cell in tableView.visibleCells {
+            cell.endEditing(true)
+        }
+        
+        
         if let userRef = userRef {
             let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
             let usersViewController = storyboard.instantiateViewController(withIdentifier: Constants.Storyboard.Identifiers.usersViewController) as! KONUsersViewController
             
             usersViewController.navigationItem.hidesBackButton = true
             usersViewController.userRef = userRef
+            usersViewController.stateController.setManualLocationHash("0q60y622fm")
+
             self.navigationController?.pushViewController(usersViewController, animated: true)
         }
     }

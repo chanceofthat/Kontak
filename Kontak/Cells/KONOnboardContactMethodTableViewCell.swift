@@ -49,6 +49,7 @@ class KONOnboardContactMethodTableViewCell: UITableViewCell, UITextFieldDelegate
         if textField == methodTextField, string == " " {
             return false
         }
+        
         return true
     }
     
@@ -59,6 +60,7 @@ class KONOnboardContactMethodTableViewCell: UITableViewCell, UITextFieldDelegate
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.setBottomBorderToColor(.konLightGray)
         methodTextFieldDidChange(textField)
+        textField.resignFirstResponder()
     }
     
 
