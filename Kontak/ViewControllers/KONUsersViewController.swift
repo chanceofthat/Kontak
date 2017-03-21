@@ -85,7 +85,7 @@ class KONUsersViewController: UIViewController, UITableViewDelegate, UITableView
     @IBAction func didPressManualLocationButton(_ sender: UIButton) {
         if let title = sender.titleLabel?.text {
             switch title {
-            case "Out Of Region":
+            case "Out Of Range":
                 stateController.setManualLocationHash("0q60y622fm")
                 break
             case "In Region":

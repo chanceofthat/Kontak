@@ -59,24 +59,24 @@
                                 <state key="normal" title="HIDE PROFILE"/>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="tCT-G1-M5D">
-                                <rect key="frame" x="57" y="69" width="261" height="30"/>
+                                <rect key="frame" x="59" y="69" width="257" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4NU-mz-PLn">
-                                        <rect key="frame" x="0.0" y="0.0" width="97" height="30"/>
-                                        <state key="normal" title="Out Of Region"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="93" height="30"/>
+                                        <state key="normal" title="Out Of Range"/>
                                         <connections>
                                             <action selector="didPressManualLocationButton:" destination="Sr6-uq-Hpp" eventType="touchUpInside" id="pYX-nM-eS0"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tXZ-yn-ZVH">
-                                        <rect key="frame" x="122" y="0.0" width="64" height="30"/>
+                                        <rect key="frame" x="118" y="0.0" width="64" height="30"/>
                                         <state key="normal" title="In Region"/>
                                         <connections>
                                             <action selector="didPressManualLocationButton:" destination="Sr6-uq-Hpp" eventType="touchUpInside" id="Zeg-Ec-SvY"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3y9-xy-afB">
-                                        <rect key="frame" x="211" y="0.0" width="50" height="30"/>
+                                        <rect key="frame" x="207" y="0.0" width="50" height="30"/>
                                         <state key="normal" title="Nearby"/>
                                         <connections>
                                             <action selector="didPressManualLocationButton:" destination="Sr6-uq-Hpp" eventType="touchUpInside" id="TYm-0i-rI3"/>
@@ -670,7 +670,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="frw-2D-yby" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-930" y="885"/>
+            <point key="canvasLocation" x="-930" y="955"/>
         </scene>
     </scenes>
 </document>

@@ -45,7 +45,6 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     dynamic var latestLocationHash: String?
     
     private var lowPowerMode = false
-//    private var didRecentlyUpdateLocation = false
     
     var status: LocationManagerStatus = .notStarted
     dynamic private var locationManagerStarted: Bool {
@@ -57,13 +56,11 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     var updateLocationContinuously = false
     
     // Diagnostic
-//    var useManualLocation = false
     var overrideLocationHash: String? {
         didSet {
             self.updateLocation()
         }
     }
-    
     
     func start() {
         registerWithStateController()
@@ -209,40 +206,23 @@ class KONLocationManager: NSObject, CLLocationManagerDelegate, KONStateControlla
     
     // MARK: - Helpers
     
-    func manuallySetLocationToHash(hash: String) {
-//        self.delegate?.didUpdateCurrentLocation(locationHash: hash)
-//        updateLocation()
-    }
-    
     func updateLocation() {
         if locationManager?.delegate == nil { return }
         if let locationManager = locationManager {
-
-//            if useManualLocation {
-//                let lastLocationHash = latestLocationHash
-//                latestLocationHash = lastLocationHash
-//            }
-//            else {
-                locationManager.startUpdatingLocation()
-                locationManager.requestLocation()
-//            }
+            locationManager.startUpdatingLocation()
+            locationManager.requestLocation()
         }
     }
     
     // MARK: - CLLocationManagerDelegate
     
-    //                let locationTimestamp = latestLocation.timestamp
-    
-    //                if (abs(Int32(locationTimestamp.timeIntervalSinceNow)) < 15) {
-
-    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let latestLocation = locations.last {
             let lastUpdatedTime = latestLocation.timestamp.timeIntervalSinceNow
             
-            print("Update Time: \(abs(lastUpdatedTime))")
+//            print("Update Time: \(abs(lastUpdatedTime))")
             if abs(lastUpdatedTime) < 1 {
-                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
+//                print("LAT: \(latestLocation.coordinate.latitude), LONG: \(latestLocation.coordinate.longitude)")
                 
                 self.latestLocation = latestLocation
                 if let overrideLocationHash = overrideLocationHash {

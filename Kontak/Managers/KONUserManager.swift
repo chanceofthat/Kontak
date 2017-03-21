@@ -51,26 +51,7 @@ class KONUserManager: NSObject, KONStateControllable {
     var usersInRange: [KONUserReference] {
         return regionUsers + nearbyUsers
     }
-    /*
-    var nearbyUsers = [KONUserReference]() {
-        didSet {
-            observers.notify(self)
-        }
-    }
-    
-    var metUsers = [KONUserReference]() {
-        didSet {
-            observers.notify(self)
-        }
-    }
-    
-    var metUserss: [KONUserReference] {
-        get {
-            return KONUserStateController.sharedInstance.metUsers
-        }
-    }
-*/
-    
+   
     // Callbacks
     var metControllerUpdateCallback: (() -> Void)?
     
@@ -112,11 +93,8 @@ class KONUserManager: NSObject, KONStateControllable {
         let currentUserQuery = KONTargetKeyQuery(targetName: self.className, key: #keyPath(KONUserManager.currentUser), evaluationValue: true)
         let currentUserAvailableRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.currentUserAvailableRule, targetKeyQueries: [currentUserQuery])
         
-        currentUserAvailableRule.evaluationCallback = {[weak self] (rule, successful, context) in
-            guard let `self` = self else { return }
-
-            if !successful {
-            }
+        currentUserAvailableRule.evaluationCallback = { (rule, successful, context) in
+            
         }
         
         stateController.registerRules(target: self, rules: [currentUserAvailableRule])

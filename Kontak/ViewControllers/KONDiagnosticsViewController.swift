@@ -61,7 +61,6 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
         let locationUpdatedRule = KONStateControllerRule(owner: self, name: Constants.StateController.RuleNames.locationAvailableRule, targetKeyQueries: [locationUpdatedQuery], condition: .valuesChanged) {[weak self] (rule, successful, context) in
             guard let `self` = self else { return }
             if successful {
-                print(context)
                 self.updateLocationFields()
             }
         }
@@ -87,7 +86,6 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
     
 
     @IBAction func getLocationButtonPressed(_ sender: Any) {
-//        locationManager.useManualLocation = false
         locationManager.latestLocationHash = nil
         locationManagerSwitch.isOn = true
         locationManagerSwitchToggled(locationManagerSwitch)
@@ -96,8 +94,6 @@ class KONDiagnosticsViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBAction func pushLocationButtonPressed(_ sender: Any) {
         if (geoHashTextField.text != "") {
-//            locationManager.useManualLocation = true
-//            locationManager.latestLocationHash = geoHashTextField.text
             locationManager.overrideLocationHash = geoHashTextField.text
             flashBackgroundWithColor(.purple)
         }

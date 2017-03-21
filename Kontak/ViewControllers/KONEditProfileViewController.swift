@@ -95,30 +95,8 @@ class KONEditProfileViewController: UIViewController, UITextFieldDelegate, UITab
         
     }
     
-    
     func dismissKeyboard() {
         view.endEditing(true)
-    }
-
-    @IBAction func textFieldEditingChanged(_ textField: UITextField) {
-        
-        if textField == firstNameTextField {
-            if let text = textField.text {
-                
-//                if text.characters.count > 0 {
-//                    nextButton.isUserInteractionEnabled = true
-//                    nextButton.alpha = 1
-//                    helperTextLabel.alpha = 0
-//                }
-//                else {
-//                    nextButton.isUserInteractionEnabled = false
-//                    nextButton.alpha = 0.5
-//                    helperTextLabel.alpha = 1
-//                }
-            }
-        }
-        else if textField == lastNameTextField {
-        }
     }
     
     // MARK: - UITextFieldDelegate Protocol
@@ -143,18 +121,6 @@ class KONEditProfileViewController: UIViewController, UITextFieldDelegate, UITab
     
     func textViewDidChange(_ textView: UITextView) {
         remainingCharacterCount = Constants.DefaultValues.initialRemainingCharacterCount - textView.text.characters.count
-        
-        if let text = textView.text {
-//            if text.characters.count > 0 {
-//                nextButton.isUserInteractionEnabled = true
-//                nextButton.alpha = 1
-//            }
-//            else {
-//                nextButton.isUserInteractionEnabled = false
-//                nextButton.alpha = 0.5
-//            }
-        }
-        
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -203,15 +169,5 @@ class KONEditProfileViewController: UIViewController, UITextFieldDelegate, UITab
         
         return cell
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

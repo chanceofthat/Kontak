@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		150336CC1E4FCD2C007EE820 /* KONNearbyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150336CB1E4FCD2C007EE820 /* KONNearbyManager.swift */; };
 		150336CE1E4FCD3B007EE820 /* KONLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150336CD1E4FCD3B007EE820 /* KONLocationManager.swift */; };
 		150336D01E4FCD5E007EE820 /* KONUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150336CF1E4FCD5E007EE820 /* KONUserManager.swift */; };
 		150336D41E4FE033007EE820 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 150336D31E4FE033007EE820 /* GoogleService-Info.plist */; };
@@ -51,7 +50,6 @@
 
 /* Begin PBXFileReference section */
 		10AC540A638F7EB9D1FED545 /* Pods-Kontak.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kontak.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kontak/Pods-Kontak.debug.xcconfig"; sourceTree = "<group>"; };
-		150336CB1E4FCD2C007EE820 /* KONNearbyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONNearbyManager.swift; path = Managers/KONNearbyManager.swift; sourceTree = "<group>"; };
 		150336CD1E4FCD3B007EE820 /* KONLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONLocationManager.swift; path = Managers/KONLocationManager.swift; sourceTree = "<group>"; };
 		150336CF1E4FCD5E007EE820 /* KONUserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONUserManager.swift; path = Managers/KONUserManager.swift; sourceTree = "<group>"; };
 		150336D31E4FE033007EE820 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -114,7 +112,6 @@
 		150336D11E4FCDD0007EE820 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				150336CB1E4FCD2C007EE820 /* KONNearbyManager.swift */,
 				150336D51E4FE42C007EE820 /* KONNetworkManager.swift */,
 				150336CD1E4FCD3B007EE820 /* KONLocationManager.swift */,
 				150336CF1E4FCD5E007EE820 /* KONUserManager.swift */,
@@ -212,7 +209,6 @@
 				150336D21E4FCDD8007EE820 /* Models */,
 				150336D11E4FCDD0007EE820 /* Managers */,
 				15DD1E3C1E4CFFC400D74F4C /* ViewControllers */,
-				15DD1E4B1E4D236800D74F4C /* Views */,
 				1580F9161E56296B00DB9C85 /* Cells */,
 				15D9B7CD1E4CF838009EBBAF /* Assets.xcassets */,
 				15D9B7CF1E4CF838009EBBAF /* LaunchScreen.storyboard */,
@@ -239,13 +235,6 @@
 				15E404A81E58E25000938651 /* KONDiagnosticsViewController.swift */,
 			);
 			name = ViewControllers;
-			sourceTree = "<group>";
-		};
-		15DD1E4B1E4D236800D74F4C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Views;
 			sourceTree = "<group>";
 		};
 		912A304F2A52B6511AB80E54 /* Pods */ = {
@@ -493,7 +482,6 @@
 				15EBCC5D1E7DBCCD00E9C30C /* KONUsersViewController.swift in Sources */,
 				15E404A71E58000400938651 /* Geohash.swift in Sources */,
 				150336D01E4FCD5E007EE820 /* KONUserManager.swift in Sources */,
-				150336CC1E4FCD2C007EE820 /* KONNearbyManager.swift in Sources */,
 				15EBCC5F1E7DBF6300E9C30C /* KONUserTableViewCell.swift in Sources */,
 				151E97861E7C7C6400A07E9C /* KONOnboardContactMethodsViewController.swift in Sources */,
 				159415DF1E68C2C8003E4424 /* KONStateControllerRule.swift in Sources */,

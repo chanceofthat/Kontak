@@ -132,7 +132,6 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
             else {
                 // Start location and user database observers
                 if let context = context, let currentUser = context[userKey] as? KONUserReference, let locationHash = context[locationKey] as? String  {
-//                    self.updateDatabaseWithCurrentUser(currentUser)
                     self.startUserBasedDatabaseObservers()
                     self.updateLocationForUser(userRef: currentUser, locationHash: locationHash)
                     self.updateLocationBasedDatabaseObserversWithLocation(locationHash)
@@ -151,7 +150,6 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
                 if let context = context {
                     for key in rule.allKeys {
                         if let metUserRefs = context[key] as? [KONUserReference] {
-                            print(metUserRefs)
                             for metUserRef in metUserRefs {
                                 self.observeDatabaseForProfileValueChangesForUser(userRef: metUserRef)
                             }
@@ -182,7 +180,7 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
     // MARK: - KONUserStateControllerDataSource Protocol
     
     func didMoveUsers(_ userRefs: [KONUserReference], toState state: KONUserState) {
-        print("Moved Users: \(userRefs) to State: \(state)")
+//        print("Moved Users: \(userRefs) to State: \(state)")
         
         switch state {
         case .missing:
@@ -287,7 +285,7 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
     func processMissingUsers(_ userRefs: [KONUserReference]) {
         guard let currentUserID = stateController.queryForCurrentUserID() else { return }
 
-        print("Process missing users: \(userRefs)")
+//        print("Process missing users: \(userRefs)")
         
         for userRef in userRefs {
             if let userID = userRef.userID {
@@ -306,7 +304,7 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
                     if let firstTime = timestamps.first, let lastTime = timestamps.last {
                         let meetDuration = (lastTime - firstTime) / 60
                         
-                        print("Saw \(userID) for \(meetDuration) minutes")
+//                        print("Saw \(userID) for \(meetDuration) minutes")
 
                         if (meetDuration > KONMeetDuration) {
                             if (self.allowMet) {
@@ -471,7 +469,6 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
                 
             }
         })
-//        userBasedDatabaseObserverHandles.append(observeHandle)
         locationBasedDatabaseObserverHandles.append(locationQueryRef)
     }
     
@@ -485,7 +482,6 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
                 
                 if let profile = userSnapshot.value as? [String : Any] {
                     self.parseProfile(profile: profile, intoUserReference: userRef, completion: { (updatedUserRef) in
-                        print(updatedUserRef)
                         self.stateController.notifyUserManagerObservers()
                     })
                 }
@@ -521,7 +517,6 @@ class KONNetworkManager: NSObject, KONStateControllable, KONUserManagerDataSourc
         
         userProfileRef.observeSingleEvent(of: .value, with: {[weak self] (profileSnapshot) in
             guard let `self` = self else { return }
-//            print(profileSnapshot.value as? [String : Any])
             if let profile = profileSnapshot.value as? [String : Any] {
                 self.parseProfile(profile: profile, intoUserReference: userRef, completion: completion)
             }

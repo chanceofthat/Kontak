@@ -21,14 +21,6 @@ extension NSObject {
     }
 }
 
-// MARK: - Targetable
-
-//extension Bool: Targetable {
-//    func getValue() -> Bool {
-//        return self
-//    }
-//}
-
 // MARK: - Colors and Gradients
 extension UIColor {
     

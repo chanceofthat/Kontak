@@ -55,7 +55,6 @@ class KONTargetObserver: NSObject {
         else {
             keyPathsForTarget[ObjectIdentifier(target).hashValue] = Set(keyPaths)
         }
-//        keyPathsForTarget[ObjectIdentifier(target).hashValue] = keyPaths
         if newKeys.count > 0 {
             registerForObservationOfKeyPaths(target: target.value!, keyPaths: Array(newKeys))
         }
@@ -85,8 +84,6 @@ class KONTargetObserver: NSObject {
         }
         
         if let keyPath = keyPath, let change = change, let newValue = change[.newKey] as? NSObject, let oldValue = change[.oldKey] as? NSObject {
-//            print("Observation of property: \(keyPath)")
-//            print("Change Dictionary: \(change)")
             
             var condition: KONStateControllerRule.EvaluationCondition = oldValue != newValue ? .valuesChanged : .valuesUnchanged
             if condition == .valuesChanged {
@@ -298,7 +295,6 @@ class KONStateController: NSObject {
         for key in keys {
             if let _rules = rulesForKey[key] {
                 rules.append(contentsOf: _rules)
-//                print("All Concerning Rules: \(rules.flatMap { return $0.name})")
             }
         }
         evaluateRules(rules, condition: condition)
