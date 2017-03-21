@@ -24,6 +24,7 @@
 		15874B3B1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15874B3A1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift */; };
 		159415DC1E68BD78003E4424 /* KONStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159415DB1E68BD78003E4424 /* KONStateController.swift */; };
 		159415DF1E68C2C8003E4424 /* KONStateControllerRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */; };
+		15962AC71E81870500927443 /* KONEditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15962AC61E81870500927443 /* KONEditProfileViewController.swift */; };
 		15D9B7C71E4CF838009EBBAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */; };
 		15D9B7CE1E4CF838009EBBAF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15D9B7CD1E4CF838009EBBAF /* Assets.xcassets */; };
 		15D9B7D11E4CF838009EBBAF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15D9B7CF1E4CF838009EBBAF /* LaunchScreen.storyboard */; };
@@ -68,6 +69,7 @@
 		15874B3A1E7B425F005E22D0 /* KONOnboardProfilePictureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONOnboardProfilePictureViewController.swift; path = ViewControllers/KONOnboardProfilePictureViewController.swift; sourceTree = "<group>"; };
 		159415DB1E68BD78003E4424 /* KONStateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateController.swift; path = State/KONStateController.swift; sourceTree = "<group>"; };
 		159415DE1E68C2C8003E4424 /* KONStateControllerRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONStateControllerRule.swift; path = State/KONStateControllerRule.swift; sourceTree = "<group>"; };
+		15962AC61E81870500927443 /* KONEditProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KONEditProfileViewController.swift; path = ViewControllers/KONEditProfileViewController.swift; sourceTree = "<group>"; };
 		15D9B7C31E4CF838009EBBAF /* Kontak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kontak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15D9B7C61E4CF838009EBBAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		15D9B7CD1E4CF838009EBBAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 			isa = PBXGroup;
 			children = (
 				15EBCC5C1E7DBCCD00E9C30C /* KONUsersViewController.swift */,
+				15962AC61E81870500927443 /* KONEditProfileViewController.swift */,
 				15E404A81E58E25000938651 /* KONDiagnosticsViewController.swift */,
 			);
 			name = ViewControllers;
@@ -485,6 +488,7 @@
 				15874B391E7B3F39005E22D0 /* KONUserReference.swift in Sources */,
 				15DD1E481E4D05FF00D74F4C /* KONConstants.swift in Sources */,
 				15874B331E7B363C005E22D0 /* KONOnboardNameViewController.swift in Sources */,
+				15962AC71E81870500927443 /* KONEditProfileViewController.swift in Sources */,
 				151E97831E7C781600A07E9C /* KONOnboardContactMethodTableViewCell.swift in Sources */,
 				15EBCC5D1E7DBCCD00E9C30C /* KONUsersViewController.swift in Sources */,
 				15E404A71E58000400938651 /* Geohash.swift in Sources */,
